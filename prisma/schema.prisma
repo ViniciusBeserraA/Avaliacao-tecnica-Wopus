@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TaskStatusEnum {
+  PENDING
+  IN_PROGRESS
+  DONE
+}
+
+model User {
+  id        String   @id @default(cuid()) // O padrão cuid ou UUID
+  email     String   @unique
+  password  String   @db.VarChar(255) // Especifica o tamanho do campo no banco de dados
+  tasks     Task[]   // Relacionamento: um usuário tem muitas tarefas
+}
+
+model Task {
+  id            String         @id @default(cuid()) // ou UUID, dependendo do tipo desejado
+  title         String
+  description   String
+  status        TaskStatusEnum
+  creationDate  DateTime       @default(now())
+  completionDate DateTime?
+  userId        String         // Chave estrangeira para o usuário
+  user          User           @relation(fields: [userId], references: [id]) // Relacionamento com o usuário
+}
