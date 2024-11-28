@@ -1,0 +1,4 @@
+libs utilizadas / padrões e convençõe utilizadas
+- Conventional Commits 1.0.0 para padronização de commits efetuados
+- uuid para ids gerados
+- class-validator para implementar validadores no dto
