@@ -13,7 +13,15 @@ export class UserService {
     this.users.push(newUser);
   }
 
+  findAll() {
+    return this.users; // Retorna todos os usuários
+  }
+
   findByEmail(email: string): UserDto | null {
-    return this.users.find((user) => user.email === email);
+    const username = this.users.find((obj) => obj.email === email);
+    if (!username) {
+      console.log('usuário não encontrado');
+    }
+    return username;
   }
 }

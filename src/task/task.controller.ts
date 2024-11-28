@@ -7,10 +7,13 @@ import {
   Put,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDto, TaskStatusEnum } from './task.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('Tasks')
 export class TaskController {
   constructor(private readonly TaskService: TaskService) {}

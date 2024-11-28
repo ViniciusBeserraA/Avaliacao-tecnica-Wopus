@@ -4,3 +4,4 @@ libs utilizadas / padrões e convençõe utilizadas
 - class-validator para implementar validadores no dto
 - bycript para manipulação das senhas dos usuários
 - prisma orm para persistencia dos dados 
+- jwt para autenticacao e protecao das rotas
