@@ -37,8 +37,7 @@ export class TaskRepository {
     return task;
   }
 
-  // Método para buscar tarefas com base nos filtros
-  async findAll({
+  async findAllTasks({
     title,
     status,
     userId,
@@ -47,12 +46,21 @@ export class TaskRepository {
     status?: TaskStatusEnumPrisma;
     userId: string;
   }): Promise<Task[]> {
-    return this.prisma.task.findMany({
+    const result = await this.prisma.task.findMany({
       where: {
-        userId,
-        ...(title && { title: { contains: title, mode: 'insensitive' } }),
-        ...(status && { status }),
+        userId: userId, // Filtra pela ID do usuário logado
+        title: title ? { contains: title } : undefined, // Filtro opcional por título
+        status: status ? status : undefined, // Filtro opcional por status
       },
+    });
+    return result;
+  }
+
+  // Atualiza a tarefa no banco de dados
+  async updateTask(id: string, data: Partial<Task>): Promise<Task> {
+    return this.prisma.task.update({
+      where: { id },
+      data,
     });
   }
 }

@@ -14,14 +14,14 @@ enum TaskStatusEnum {
 }
 
 model User {
-  id        String   @id @default(cuid()) // O padrão cuid ou UUID
+  id        String   @id @default(uuid()) // O padrão cuid ou UUID
   email     String   @unique
   password  String   @db.VarChar(255) // Especifica o tamanho do campo no banco de dados
   tasks     Task[]   // Relacionamento: um usuário tem muitas tarefas
 }
 
 model Task {
-  id            String         @id @default(cuid()) // ou UUID, dependendo do tipo desejado
+  id            String   @id @default(uuid()) // ou UUID, dependendo do tipo desejado
   title         String
   description   String
   status        TaskStatusEnum

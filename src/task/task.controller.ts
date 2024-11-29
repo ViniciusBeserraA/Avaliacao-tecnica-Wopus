@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Param,
+  Put,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDto, TaskStatusEnum } from './task.dto';
@@ -49,13 +50,9 @@ export class TaskController {
     return this.TaskService.findTaskById(id);
   }
 
-  // @Put()
-  // updateTask(@Body() task: TaskDto) {
-  //   return this.TaskService.updateTask(task);
-  // }
-
-  // @Delete(':id')
-  // deletarTask(@Param('id') id: string): void {
-  //   this.TaskService.deletarTask(id);
-  // }
+  @Put()
+  @UseGuards(AuthGuard) // Protege a rota com o AuthGuard
+  async updateTask(@Body() taskDto: TaskDto): Promise<TaskDto> {
+    return this.TaskService.updateTask(taskDto);
+  }
 }
