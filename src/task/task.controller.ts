@@ -3,15 +3,17 @@ import {
   Get,
   Post,
   Body,
-  Param,
-  Put,
-  Delete,
+  // Param,
+  // Put,
+  // Delete,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDto, TaskStatusEnum } from './task.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { GetUser } from 'src/auth/auth.get.user.decorator';
+import { Task } from '@prisma/client';
 
 @UseGuards(AuthGuard)
 @Controller('Tasks')
@@ -19,30 +21,40 @@ export class TaskController {
   constructor(private readonly TaskService: TaskService) {}
 
   @Post()
-  createTask(@Body() taskDto: TaskDto) {
-    this.TaskService.createTask(taskDto);
+  @UseGuards(AuthGuard)
+  createTask(@GetUser() userId: string, @Body() taskDto: TaskDto) {
+    console.log(userId);
+    return this.TaskService.createTask(taskDto, userId);
   }
 
   @Get()
+  @UseGuards(AuthGuard)
   findAllTasks(
+    @GetUser() userId: string,
     @Query('title') title?: string,
     @Query('status') status?: TaskStatusEnum,
-  ): TaskDto[] {
-    return this.TaskService.findAllTasks({ title, status });
+  ): Promise<Task[]> {
+    const mappedStatus = status
+      ? this.TaskService.mapStatusToPrisma(status)
+      : undefined;
+    return this.TaskService.findAllTasks(
+      { title, status: mappedStatus },
+      userId,
+    );
   }
 
-  @Get(':id')
-  findTaskById(@Param('id') id: string): TaskDto {
-    return this.TaskService.buscarTaskPorId(id);
-  }
+  // @Get(':id')
+  // findTaskById(@Param('id') id: string): TaskDto {
+  //   return this.TaskService.buscarTaskPorId(id);
+  // }
 
-  @Put()
-  updateTask(@Body() task: TaskDto) {
-    return this.TaskService.updateTask(task);
-  }
+  // @Put()
+  // updateTask(@Body() task: TaskDto) {
+  //   return this.TaskService.updateTask(task);
+  // }
 
-  @Delete(':id')
-  deletarTask(@Param('id') id: string): void {
-    this.TaskService.deletarTask(id);
-  }
+  // @Delete(':id')
+  // deletarTask(@Param('id') id: string): void {
+  //   this.TaskService.deletarTask(id);
+  // }
 }

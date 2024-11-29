@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { compareSync as bcryptCompareSync } from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { AuthResponseDto } from './auth.dto';
 
@@ -18,13 +18,12 @@ export class AuthService {
     );
   }
 
-  signIn(email: string, password: string): AuthResponseDto {
-    const x = 'viniciusbeserra1341@gmail.com';
-    const foundUser = this.userService.findByEmail(x);
-    // const foundUser = this.userService.findByEmail(email);
-
-    if (!foundUser || !bcryptCompareSync(password, foundUser.password)) {
-      throw new UnauthorizedException();
+  async signIn(email: string, password: string): Promise<AuthResponseDto> {
+    const foundUser = await this.userService.findByEmail(email);
+    console.log('password forncecido:', password);
+    console.log('password usuário encontrado:', foundUser.password);
+    if (!foundUser || !bcrypt.compareSync(password, foundUser.password)) {
+      throw new UnauthorizedException('Credenciais inválidas');
     }
 
     const payload = { sub: foundUser.id, email: foundUser.email };

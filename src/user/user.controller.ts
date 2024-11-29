@@ -18,7 +18,6 @@ export class UserController {
     this.userService.create(user);
   }
 
-  // Rota para listar todos os usuários
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {

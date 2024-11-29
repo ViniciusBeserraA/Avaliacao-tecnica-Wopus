@@ -8,7 +8,7 @@ datasource db {
 }
 
 enum TaskStatusEnum {
-  PENDING
+  TO_DO
   IN_PROGRESS
   DONE
 }
