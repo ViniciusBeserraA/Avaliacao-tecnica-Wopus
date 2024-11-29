@@ -18,9 +18,8 @@ export class UserService {
     return this.userRepository.create(newUser);
   }
 
-  // Método para encontrar todos os usuários
   async findAll(): Promise<UserDto[]> {
-    return this.userRepository.findAll(); // Chama o repositório para buscar todos os usuários
+    return this.userRepository.findAll();
   }
 
   async findByEmail(email: string): Promise<UserDto | null> {

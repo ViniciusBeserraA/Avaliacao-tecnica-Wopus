@@ -8,19 +8,15 @@ import { TaskStatusEnum as TaskStatusEnumPrisma } from '@prisma/client';
 export class TaskRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    taskDto: TaskDto,
-    userId: string,
-    status: TaskStatusEnum,
-  ): Promise<Task> {
-    const currentDate = new Date().toISOString(); // Data atual em formato ISO
+  async create(taskDto: TaskDto, userId: string): Promise<Task> {
+    const currentDate = new Date().toISOString();
     return this.prisma.task.create({
       data: {
         title: taskDto.title,
         description: taskDto.description,
-        status: status,
-        creationDate: currentDate, // Garantindo que a data de criação seja a atual
-        userId: userId, // Associando a task ao usuário
+        status: TaskStatusEnum.PENDENTE,
+        creationDate: currentDate,
+        userId: userId,
       },
     });
   }
@@ -56,15 +52,16 @@ export class TaskRepository {
     return result;
   }
 
-  // Atualiza a tarefa no banco de dados
-  async updateTask(id: string, data: Partial<Task>): Promise<Task> {
+  async updateTask(id: string, updateData: Partial<Task>): Promise<Task> {
     return this.prisma.task.update({
       where: { id },
-      data,
+      data: {
+        ...updateData,
+        completionDate: updateData.completionDate ?? undefined,
+      },
     });
   }
 
-  // Deletar uma task
   async deleteTask(id: string): Promise<Task> {
     return this.prisma.task.delete({
       where: { id },

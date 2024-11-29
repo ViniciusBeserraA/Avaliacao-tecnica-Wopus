@@ -9,9 +9,9 @@ import {
 } from 'class-validator';
 
 export enum TaskStatusEnum {
-  TO_DO = 'PENDENTE',
-  IN_PROGRESS = 'EM_PROGRESSO',
-  DONE = 'CONCLUÍDA',
+  PENDENTE,
+  EM_PROGRESSO,
+  CONCLUIDA,
 }
 export class TaskDto {
   @IsUUID()
@@ -30,7 +30,7 @@ export class TaskDto {
 
   @IsEnum(TaskStatusEnum)
   @IsOptional()
-  status: TaskStatusEnum = TaskStatusEnum.TO_DO;
+  status: TaskStatusEnum = TaskStatusEnum.PENDENTE;
 
   @IsOptional()
   creationDate: Date;

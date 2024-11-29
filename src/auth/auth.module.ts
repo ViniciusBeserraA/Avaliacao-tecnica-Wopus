@@ -14,7 +14,6 @@ import { AuthService } from './auth.service';
       useFactory: async (ConfigService: ConfigService) => ({
         secret: ConfigService.get<string>('JWT_SECRET'),
         signOptions: {
-          //+ conversao implicita para number
           expiresIn: +ConfigService.get<number>('JWT_EXPIRATION_TIME'),
         },
       }),

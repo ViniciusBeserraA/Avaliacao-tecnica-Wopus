@@ -10,7 +10,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { TaskDto, TaskStatusEnum } from './task.dto';
+import { TaskDto } from './task.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { GetUser } from 'src/auth/auth.get.user.decorator';
 import { Task } from '@prisma/client';
@@ -31,15 +31,9 @@ export class TaskController {
   findAllTasks(
     @GetUser() userId: string,
     @Query('title') title?: string,
-    @Query('status') status?: TaskStatusEnum,
+    @Query('status') status?: string,
   ): Promise<Task[]> {
-    const mappedStatus = status
-      ? this.TaskService.mapStatusToPrisma(status)
-      : undefined;
-    return this.TaskService.findAllTasks(
-      { title, status: mappedStatus },
-      userId,
-    );
+    return this.TaskService.findAllTasks({ title, status: status }, userId);
   }
 
   @Get(':id')
@@ -55,7 +49,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard) // Aqui você pode usar seu guard de autenticação, se necessário
+  @UseGuards(AuthGuard)
   async deleteTask(@Param('id') taskId: string): Promise<void> {
     return this.TaskService.deleteTask(taskId);
   }

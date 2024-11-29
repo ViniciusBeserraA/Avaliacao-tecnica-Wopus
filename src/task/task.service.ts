@@ -9,19 +9,6 @@ import { v4 as uuid } from 'uuid';
 export class TaskService {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  mapStatusToPrisma(status: TaskStatusEnumDTO): TaskStatusEnumPrisma {
-    switch (status) {
-      case TaskStatusEnumDTO.TO_DO:
-        return TaskStatusEnumPrisma.TO_DO;
-      case TaskStatusEnumDTO.IN_PROGRESS:
-        return TaskStatusEnumPrisma.IN_PROGRESS;
-      case TaskStatusEnumDTO.DONE:
-        return TaskStatusEnumPrisma.DONE;
-      default:
-        return TaskStatusEnumPrisma.TO_DO; // Padrão
-    }
-  }
-
   async findAllTasks(
     { title, status }: { title?: string; status?: TaskStatusEnumPrisma },
     userId: string,
@@ -45,7 +32,7 @@ export class TaskService {
       id: task.id,
       title: task.title,
       description: task.description,
-      status: task.status as TaskStatusEnumDTO,
+      status: task.status,
       creationDate: task.creationDate,
       completionDate: task.completionDate,
     };
@@ -60,11 +47,7 @@ export class TaskService {
       creationDate: new Date(),
     };
 
-    return this.taskRepository.create(
-      taskWithId,
-      userId,
-      this.mapStatusToPrisma(taskDto.status),
-    );
+    return this.taskRepository.create(taskWithId, userId);
   }
 
   async updateTask(taskDto: TaskDto): Promise<TaskDto> {
@@ -74,14 +57,18 @@ export class TaskService {
       throw new NotFoundException('Tarefa não encontrada');
     }
 
-    const status = this.mapStatusToPrisma(taskDto.status);
+    const status = taskDto.status;
+
+    const completionDate =
+      status === TaskStatusEnumPrisma.CONCLUIDA ? new Date() : null;
 
     const updatedTask = await this.taskRepository.updateTask(taskDto.id, {
       ...taskDto,
       status,
+      completionDate,
     });
 
-    const taskDtoResponse: TaskDto = {
+    return {
       id: updatedTask.id,
       title: updatedTask.title,
       description: updatedTask.description,
@@ -89,8 +76,6 @@ export class TaskService {
       creationDate: updatedTask.creationDate,
       completionDate: updatedTask.completionDate,
     };
-
-    return taskDtoResponse;
   }
 
   async deleteTask(id: string): Promise<void> {

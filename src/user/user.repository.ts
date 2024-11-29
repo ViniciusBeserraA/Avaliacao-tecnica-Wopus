@@ -17,8 +17,7 @@ export class UserRepository {
     });
   }
 
-  // Método para encontrar todos os usuários
   async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany(); // Retorna todos os usuários do banco
+    return this.prisma.user.findMany();
   }
 }

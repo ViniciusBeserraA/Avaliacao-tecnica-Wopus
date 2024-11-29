@@ -8,25 +8,25 @@ datasource db {
 }
 
 enum TaskStatusEnum {
-  TO_DO
-  IN_PROGRESS
-  DONE
+  PENDENTE
+  EM_PROGRESSO
+  CONCLUIDA
 }
 
 model User {
-  id        String   @id @default(uuid()) // O padrão cuid ou UUID
+  id        String   @id @default(uuid()) 
   email     String   @unique
-  password  String   @db.VarChar(255) // Especifica o tamanho do campo no banco de dados
-  tasks     Task[]   // Relacionamento: um usuário tem muitas tarefas
+  password  String   @db.VarChar(255)
+  tasks     Task[]  
 }
 
 model Task {
-  id            String   @id @default(uuid()) // ou UUID, dependendo do tipo desejado
+  id            String   @id @default(uuid())
   title         String
   description   String
   status        TaskStatusEnum
   creationDate  DateTime       @default(now())
   completionDate DateTime?
-  userId        String         // Chave estrangeira para o usuário
-  user          User           @relation(fields: [userId], references: [id]) // Relacionamento com o usuário
+  userId        String        
+  user          User           @relation(fields: [userId], references: [id])
 }
