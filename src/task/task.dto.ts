@@ -40,7 +40,8 @@ export class TaskDto {
   completionDate: Date;
 }
 
-export interface findAllParameters {
-  title: string;
+export interface ApiResponse<T> {
   status: string;
+  message: string;
+  data?: T;
 }

@@ -1,5 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TaskDto, TaskStatusEnum as TaskStatusEnumDTO } from './task.dto';
+import {
+  ApiResponse,
+  TaskDto,
+  TaskStatusEnum as TaskStatusEnumDTO,
+} from './task.dto';
 import { Task } from '@prisma/client';
 import { TaskRepository } from './task.repository';
 import { TaskStatusEnum as TaskStatusEnumPrisma } from '@prisma/client';
@@ -40,17 +44,32 @@ export class TaskService {
     return taskDto;
   }
 
-  async createTask(taskDto: TaskDto, userId: string): Promise<Task> {
+  async createTask(
+    taskDto: TaskDto,
+    userId: string,
+  ): Promise<ApiResponse<any>> {
     const taskWithId = {
       ...taskDto,
       id: uuid(),
       creationDate: new Date(),
     };
 
-    return this.taskRepository.create(taskWithId, userId);
+    const createdTask = await this.taskRepository.create(taskWithId, userId);
+
+    return {
+      status: 'success',
+      message: 'Tarefa cadastrada com sucesso',
+      data: {
+        id: createdTask.id,
+        title: createdTask.title,
+        description: createdTask.description,
+        status: createdTask.status as TaskStatusEnumDTO,
+        creationDate: createdTask.creationDate,
+      },
+    };
   }
 
-  async updateTask(taskDto: TaskDto): Promise<TaskDto> {
+  async updateTask(taskDto: TaskDto): Promise<ApiResponse<any>> {
     const task = await this.taskRepository.findTaskById(taskDto.id);
 
     if (!task) {
@@ -67,14 +86,17 @@ export class TaskService {
       status,
       completionDate,
     });
-
     return {
-      id: updatedTask.id,
-      title: updatedTask.title,
-      description: updatedTask.description,
-      status: updatedTask.status as TaskStatusEnumDTO,
-      creationDate: updatedTask.creationDate,
-      completionDate: updatedTask.completionDate,
+      status: 'success',
+      message: 'Dados alterados com sucesso',
+      data: {
+        id: updatedTask.id,
+        title: updatedTask.title,
+        description: updatedTask.description,
+        status: updatedTask.status as TaskStatusEnumDTO,
+        creationDate: updatedTask.creationDate,
+        completionDate: updatedTask.completionDate,
+      },
     };
   }
 

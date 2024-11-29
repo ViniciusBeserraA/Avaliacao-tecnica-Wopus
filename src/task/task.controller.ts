@@ -10,7 +10,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { TaskDto } from './task.dto';
+import { ApiResponse, TaskDto } from './task.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { GetUser } from 'src/auth/auth.get.user.decorator';
 import { Task } from '@prisma/client';
@@ -44,7 +44,7 @@ export class TaskController {
 
   @Put()
   @UseGuards(AuthGuard)
-  async updateTask(@Body() taskDto: TaskDto): Promise<TaskDto> {
+  async updateTask(@Body() taskDto: TaskDto): Promise<ApiResponse<any>> {
     return this.TaskService.updateTask(taskDto);
   }
 

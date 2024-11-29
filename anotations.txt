@@ -5,3 +5,4 @@ libs utilizadas / padrões e convençõe utilizadas
 - bycript para manipulação das senhas dos usuários
 - prisma orm para persistencia dos dados 
 - jwt para autenticacao e protecao das rotas
+- implementacao de authresponse para retorno de requisicoes

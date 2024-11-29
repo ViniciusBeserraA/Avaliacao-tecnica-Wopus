@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserDto } from './user.dto';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { ApiResponse, UserDto } from './user.dto';
 import { hashSync as bcryptHashSync } from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import { PrismaService } from 'prisma/prisma.service';
@@ -12,10 +12,26 @@ export class UserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  create(newUser: UserDto) {
+  async create(newUser: UserDto): Promise<ApiResponse<any>> {
+    const userNew = this.findByEmail(newUser.email);
+    if (!userNew) {
+      throw new ConflictException(
+        `Usuário com o email ${newUser.email} já está registrado.`,
+      );
+    }
+
     newUser.id = uuid();
     newUser.password = bcryptHashSync(newUser.password, 10);
-    return this.userRepository.create(newUser);
+    const createdUser = await this.userRepository.create(newUser);
+
+    return {
+      status: 'success',
+      message: 'Usuário cadastrado com sucesso!',
+      data: {
+        id: createdUser.id,
+        email: createdUser.email,
+      },
+    };
   }
 
   async findAll(): Promise<UserDto[]> {
@@ -26,12 +42,6 @@ export class UserService {
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
-
-    if (!user) {
-      throw new NotFoundException(
-        `Usuário com o email ${email} não encontrado`,
-      );
-    }
 
     return user;
   }
