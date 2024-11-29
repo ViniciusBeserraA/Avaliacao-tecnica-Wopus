@@ -20,8 +20,6 @@ export class AuthService {
 
   async signIn(email: string, password: string): Promise<AuthResponseDto> {
     const foundUser = await this.userService.findByEmail(email);
-    console.log('password forncecido:', password);
-    console.log('password usuário encontrado:', foundUser.password);
     if (!foundUser || !bcrypt.compareSync(password, foundUser.password)) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
