@@ -1,5 +1,5 @@
 // src/task/task.repository.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TaskDto } from './task.dto';
 import { Task } from '@prisma/client';
@@ -24,6 +24,19 @@ export class TaskRepository {
       },
     });
   }
+
+  async findTaskById(id: string): Promise<Task> {
+    const task = await this.prisma.task.findUnique({
+      where: { id },
+    });
+
+    if (!task) {
+      throw new NotFoundException('Tarefa não encontrada');
+    }
+
+    return task;
+  }
+
   // Método para buscar tarefas com base nos filtros
   async findAll({
     title,

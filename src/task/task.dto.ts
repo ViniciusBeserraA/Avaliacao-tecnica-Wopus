@@ -30,7 +30,7 @@ export class TaskDto {
 
   @IsEnum(TaskStatusEnum)
   @IsOptional()
-  status: TaskStatusEnum = TaskStatusEnum.TO_DO; // Valor padrão 'PENDENTE'
+  status: TaskStatusEnum = TaskStatusEnum.TO_DO;
 
   @IsDateString()
   creationDate: Date;

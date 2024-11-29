@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskDto, TaskStatusEnum as TaskStatusEnumDTO } from './task.dto';
 import { Task } from '@prisma/client';
 import { TaskRepository } from './task.repository';
@@ -27,6 +27,25 @@ export class TaskService {
     userId: string,
   ): Promise<Task[]> {
     return this.taskRepository.findAll({ title, status, userId });
+  }
+
+  async findTaskById(id: string): Promise<TaskDto> {
+    const task = await this.taskRepository.findTaskById(id);
+
+    if (!task) {
+      throw new NotFoundException('Tarefa não encontrada');
+    }
+
+    const taskDto: TaskDto = {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      status: task.status as TaskStatusEnumDTO,
+      creationDate: task.creationDate,
+      completionDate: task.completionDate,
+    };
+
+    return taskDto;
   }
 
   async createTask(taskDto: TaskDto, userId: string): Promise<Task> {

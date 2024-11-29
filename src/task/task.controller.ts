@@ -8,6 +8,7 @@ import {
   // Delete,
   Query,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDto, TaskStatusEnum } from './task.dto';
@@ -42,10 +43,11 @@ export class TaskController {
     );
   }
 
-  // @Get(':id')
-  // findTaskById(@Param('id') id: string): TaskDto {
-  //   return this.TaskService.buscarTaskPorId(id);
-  // }
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  findTaskById(@Param('id') id: string): Promise<TaskDto> {
+    return this.TaskService.findTaskById(id);
+  }
 
   // @Put()
   // updateTask(@Body() task: TaskDto) {
