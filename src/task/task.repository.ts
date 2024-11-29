@@ -24,9 +24,6 @@ export class TaskRepository {
       },
     });
   }
-
-  // Outros métodos do repositório...
-
   // Método para buscar tarefas com base nos filtros
   async findAll({
     title,

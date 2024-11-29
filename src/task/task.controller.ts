@@ -23,7 +23,6 @@ export class TaskController {
   @Post()
   @UseGuards(AuthGuard)
   createTask(@GetUser() userId: string, @Body() taskDto: TaskDto) {
-    console.log(userId);
     return this.TaskService.createTask(taskDto, userId);
   }
 

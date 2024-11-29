@@ -1,22 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserDto } from './user.dto';
 import { hashSync as bcryptHashSync } from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
 import { PrismaService } from 'prisma/prisma.service';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  private readonly users: UserDto[] = [];
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   create(newUser: UserDto) {
     newUser.id = uuid();
     newUser.password = bcryptHashSync(newUser.password, 10);
-    this.users.push(newUser);
+    return this.userRepository.create(newUser);
   }
 
-  findAll() {
-    return this.users; // Retorna todos os usuários
+  // Método para encontrar todos os usuários
+  async findAll(): Promise<UserDto[]> {
+    return this.userRepository.findAll(); // Chama o repositório para buscar todos os usuários
   }
 
   async findByEmail(email: string): Promise<UserDto | null> {
@@ -25,8 +29,9 @@ export class UserService {
     });
 
     if (!user) {
-      console.log('Usuário não encontrado');
-      return null;
+      throw new NotFoundException(
+        `Usuário com o email ${email} não encontrado`,
+      );
     }
 
     return user;
