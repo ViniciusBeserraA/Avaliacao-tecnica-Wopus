@@ -3,13 +3,11 @@ import {
   Get,
   Post,
   Body,
-  // Param,
-  // Put,
-  // Delete,
   Query,
   UseGuards,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDto, TaskStatusEnum } from './task.dto';
@@ -51,8 +49,14 @@ export class TaskController {
   }
 
   @Put()
-  @UseGuards(AuthGuard) // Protege a rota com o AuthGuard
+  @UseGuards(AuthGuard)
   async updateTask(@Body() taskDto: TaskDto): Promise<TaskDto> {
     return this.TaskService.updateTask(taskDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard) // Aqui você pode usar seu guard de autenticação, se necessário
+  async deleteTask(@Param('id') taskId: string): Promise<void> {
+    return this.TaskService.deleteTask(taskId);
   }
 }

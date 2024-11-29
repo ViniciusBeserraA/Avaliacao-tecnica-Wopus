@@ -54,10 +54,17 @@ export class TaskService {
   }
 
   async createTask(taskDto: TaskDto, userId: string): Promise<Task> {
-    const taskId = uuid();
-    const taskWithId = { ...taskDto, id: taskId };
-    const status = this.mapStatusToPrisma(taskDto.status);
-    return this.taskRepository.create(taskWithId, userId, status);
+    const taskWithId = {
+      ...taskDto,
+      id: uuid(),
+      creationDate: new Date(),
+    };
+
+    return this.taskRepository.create(
+      taskWithId,
+      userId,
+      this.mapStatusToPrisma(taskDto.status),
+    );
   }
 
   async updateTask(taskDto: TaskDto): Promise<TaskDto> {
@@ -84,5 +91,13 @@ export class TaskService {
     };
 
     return taskDtoResponse;
+  }
+
+  async deleteTask(id: string): Promise<void> {
+    const task = await this.taskRepository.findTaskById(id);
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+    await this.taskRepository.deleteTask(id);
   }
 }

@@ -32,7 +32,7 @@ export class TaskDto {
   @IsOptional()
   status: TaskStatusEnum = TaskStatusEnum.TO_DO;
 
-  @IsDateString()
+  @IsOptional()
   creationDate: Date;
 
   @IsDateString()

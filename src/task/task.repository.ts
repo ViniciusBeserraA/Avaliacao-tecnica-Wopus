@@ -1,8 +1,7 @@
-// src/task/task.repository.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TaskDto } from './task.dto';
-import { Task } from '@prisma/client';
+import { Task, TaskStatusEnum } from '@prisma/client';
 import { TaskStatusEnum as TaskStatusEnumPrisma } from '@prisma/client';
 
 @Injectable()
@@ -12,15 +11,16 @@ export class TaskRepository {
   async create(
     taskDto: TaskDto,
     userId: string,
-    status: TaskStatusEnumPrisma,
+    status: TaskStatusEnum,
   ): Promise<Task> {
+    const currentDate = new Date().toISOString(); // Data atual em formato ISO
     return this.prisma.task.create({
       data: {
         title: taskDto.title,
         description: taskDto.description,
         status: status,
-        creationDate: new Date(),
-        userId,
+        creationDate: currentDate, // Garantindo que a data de criação seja a atual
+        userId: userId, // Associando a task ao usuário
       },
     });
   }
@@ -48,9 +48,9 @@ export class TaskRepository {
   }): Promise<Task[]> {
     const result = await this.prisma.task.findMany({
       where: {
-        userId: userId, // Filtra pela ID do usuário logado
-        title: title ? { contains: title } : undefined, // Filtro opcional por título
-        status: status ? status : undefined, // Filtro opcional por status
+        userId: userId,
+        title: title ? { contains: title } : undefined,
+        status: status ? status : undefined,
       },
     });
     return result;
@@ -61,6 +61,13 @@ export class TaskRepository {
     return this.prisma.task.update({
       where: { id },
       data,
+    });
+  }
+
+  // Deletar uma task
+  async deleteTask(id: string): Promise<Task> {
+    return this.prisma.task.delete({
+      where: { id },
     });
   }
 }
