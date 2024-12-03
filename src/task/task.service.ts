@@ -8,7 +8,6 @@ import { Task } from '@prisma/client';
 import { TaskRepository } from './task.repository';
 import { TaskStatusEnum as TaskStatusEnumPrisma } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
-
 @Injectable()
 export class TaskService {
   constructor(private readonly taskRepository: TaskRepository) {}
@@ -16,13 +15,25 @@ export class TaskService {
   async findAllTasks(
     { title, status }: { title?: string; status?: TaskStatusEnumPrisma },
     userId: string,
-  ): Promise<Task[]> {
-    const result = await this.taskRepository.findAllTasks({
+    page: number,
+    limit: number,
+  ): Promise<{ tasks: Task[]; total: number; page: number; limit: number }> {
+    const skip = (page - 1) * limit;
+
+    const { tasks, total } = await this.taskRepository.findAllTasks({
       title,
       status,
       userId,
+      skip,
+      take: limit,
     });
-    return result;
+
+    return {
+      tasks,
+      total,
+      page,
+      limit,
+    };
   }
 
   async findTaskById(id: string): Promise<TaskDto> {

@@ -29,11 +29,18 @@ export class TaskController {
   @Get()
   @UseGuards(AuthGuard)
   findAllTasks(
+    @Query('page') page = 1,
+    @Query('limit') limit = 5,
     @GetUser() userId: string,
     @Query('title') title?: string,
     @Query('status') status?: string,
-  ): Promise<Task[]> {
-    return this.TaskService.findAllTasks({ title, status: status }, userId);
+  ): Promise<{ tasks: Task[]; total: number; page: number; limit: number }> {
+    return this.TaskService.findAllTasks(
+      { title, status: status },
+      userId,
+      page,
+      limit,
+    );
   }
 
   @Get(':id')

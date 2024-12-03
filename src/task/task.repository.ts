@@ -37,19 +37,36 @@ export class TaskRepository {
     title,
     status,
     userId,
+    skip,
+    take,
   }: {
     title?: string;
     status?: TaskStatusEnumPrisma;
     userId: string;
-  }): Promise<Task[]> {
-    const result = await this.prisma.task.findMany({
-      where: {
-        userId: userId,
-        title: title ? { contains: title } : undefined,
-        status: status ? status : undefined,
-      },
-    });
-    return result;
+    skip: number;
+    take: number;
+  }): Promise<{ tasks: Task[]; total: number }> {
+    const [tasks, total] = await Promise.all([
+      this.prisma.task.findMany({
+        where: {
+          userId,
+          title: title ? { contains: title } : undefined,
+          status: status || undefined,
+        },
+        skip,
+        take,
+        orderBy: { creationDate: 'desc' },
+      }),
+      this.prisma.task.count({
+        where: {
+          userId,
+          title: title ? { contains: title } : undefined,
+          status: status || undefined,
+        },
+      }),
+    ]);
+
+    return { tasks, total };
   }
 
   async updateTask(id: string, updateData: Partial<Task>): Promise<Task> {
