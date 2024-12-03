@@ -1,23 +1,32 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, LogOut } from "lucide-react";
+import TaskDialog from "../taskDialog/create";
 
 type HeaderProps = {
   search: string;
   setSearch: (value: string) => void;
   onLogout: () => void;
-  onOpenCreateTaskDialog: () => void;
 };
 
-export default function Header({
-  search,
-  setSearch,
-  onLogout,
-  onOpenCreateTaskDialog,
-}: HeaderProps) {
+export default function Header({ search, setSearch, onLogout }: HeaderProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [task, setTask] = useState({ title: "", description: "" });
+
+  const handleCreateTask = () => {
+    console.log("Tarefa criada:", task);
+    setIsOpen(false);
+    setTask({ title: "", description: "" });
+  };
+
+  const openCreateDialog = () => {
+    setTask({ title: "", description: "" });
+    setIsOpen(true);
+  };
+
   return (
     <div className="mb-6">
-      {/* Título no topo à esquerda */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-semibold text-gray-900">
           Gerenciador de Tarefas
@@ -32,7 +41,6 @@ export default function Header({
         </Button>
       </div>
 
-      {/* Caixa de pesquisa e botão de criar tarefa */}
       <div className="flex items-center space-x-4">
         <Input
           type="text"
@@ -43,13 +51,19 @@ export default function Header({
         />
         <Button
           variant="outline"
-          onClick={onOpenCreateTaskDialog}
+          onClick={openCreateDialog}
           className="bg-primary text-white flex items-center hover:bg-red-700 hover:text-white"
         >
           <Plus className="h-5 w-5" />
           Criar Tarefa
         </Button>
       </div>
+
+      <TaskDialog
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        onSave={handleCreateTask}
+      />
     </div>
   );
 }
