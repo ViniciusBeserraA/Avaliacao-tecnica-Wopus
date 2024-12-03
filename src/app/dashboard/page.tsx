@@ -1,54 +1,53 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../header/page";
 import TableComponent from "../table/page";
-
-const tasks = [
-  {
-    id: 1,
-    title: "Tarefa 1",
-    description: "Descrição da tarefa 1",
-    status: "Em progresso",
-  },
-  {
-    id: 2,
-    title: "Tarefa 2",
-    description: "Descrição da tarefa 2",
-    status: "Concluída",
-  },
-  {
-    id: 3,
-    title: "Tarefa 3",
-    description: "Descrição da tarefa 3",
-    status: "Pendente",
-  },
-  {
-    id: 4,
-    title: "Tarefa 4",
-    description: "Descrição da tarefa 4",
-    status: "Em progresso",
-  },
-];
+import axios from "../../lib/axios";
 
 export default function Dashboard() {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
   const [status, setStatus] = useState("all");
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
   const handleLogout = () => {
     router.push("/login");
   };
 
+  const fetchTasks = async () => {
+    setLoading(true);
+    setError("");
+
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get("/tasks", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setTasks(response.data.tasks);
+      console.log(response.data);
+    } catch (err) {
+      setError("Erro ao carregar as tarefas.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const filteredTasks = tasks
-    .filter((task) => {
-      return task.title.toLowerCase().includes(search.toLowerCase());
-    })
-    .filter((task) => {
-      if (status) {
-        return task.status === status;
-      }
-      return true;
-    });
+    .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
+    .filter((task) => (status !== "all" ? task.status === status : true));
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -59,7 +58,14 @@ export default function Dashboard() {
         status={status}
         setStatus={setStatus}
       />
-      <TableComponent tasks={filteredTasks} />
+
+      {loading ? (
+        <p>Carregando tarefas...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <TableComponent tasks={filteredTasks} />
+      )}
     </div>
   );
 }

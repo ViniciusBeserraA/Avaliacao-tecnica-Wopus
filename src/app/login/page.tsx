@@ -16,7 +16,6 @@ export default function Login() {
     try {
       const response = await axios.post("/auth/login", { email, password });
       const { token } = response.data;
-
       localStorage.setItem("token", token);
 
       window.location.href = "/dashboard";
@@ -31,10 +30,9 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await axios.post("/auth/register", { email, password });
-      console.log(response);
+      await axios.post("/auth/register", { email, password });
       alert("Cadastro realizado com sucesso! Faça login para continuar.");
-      setTab("login"); // Troca para a aba de login automaticamente
+      setTab("login");
     } catch (err) {
       console.error(err);
       setError("Erro ao cadastrar. Tente novamente.");
@@ -49,7 +47,6 @@ export default function Login() {
         </div>
         <h2 className="text-white text-2xl mb-6 text-center">Task Manager</h2>
 
-        {/* Tabs */}
         <div className="flex justify-center mb-6">
           <button
             onClick={() => setTab("login")}
@@ -73,7 +70,6 @@ export default function Login() {
           </button>
         </div>
 
-        {/* Formulário de Login */}
         {tab === "login" && (
           <form onSubmit={handleSubmitLogin}>
             {error && <p className="text-red-500 text-center">{error}</p>}
@@ -117,7 +113,6 @@ export default function Login() {
           </form>
         )}
 
-        {/* Formulário de Cadastro */}
         {tab === "register" && (
           <form onSubmit={handleSubmitRegister}>
             {error && <p className="text-red-500 text-center">{error}</p>}
