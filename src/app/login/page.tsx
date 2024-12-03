@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import Image from "next/image";
 import axios from "../../lib/axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Login() {
   const [tab, setTab] = useState("login");
@@ -17,14 +19,23 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await axios.post("/auth/login", { email, password });
-      const { token } = response.data;
-      localStorage.setItem("token", token);
-
+      const { data } = await axios.post("/auth/login", { email, password });
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("loginSuccess", "true");
       router.push("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError("E-mail ou senha inválidos. Tente novamente.");
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Erro desconhecido";
+      toast(errorMessage, {
+        duration: 4000,
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          padding: "12px",
+        },
+        position: "top-right",
+      });
     }
   };
 
@@ -75,7 +86,6 @@ export default function Login() {
 
         {tab === "login" && (
           <form onSubmit={handleSubmitLogin}>
-            {error && <p className="text-red-500 text-center">{error}</p>}
             <div className="mb-4">
               <label htmlFor="email" className="text-white text-md block mb-2">
                 E-mail

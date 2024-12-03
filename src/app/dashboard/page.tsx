@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Header from "../header/page";
 import TableComponent from "../table/page";
 import axios from "../../lib/axios";
+import AlertDialog from "@/components/alertDialog";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -13,6 +15,7 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -33,10 +36,8 @@ export default function Dashboard() {
       });
 
       setTasks(response.data.tasks);
-      console.log(response.data);
-    } catch (err) {
+    } catch {
       setError("Erro ao carregar as tarefas.");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -49,12 +50,33 @@ export default function Dashboard() {
     }
   }, [router]);
 
+  useEffect(() => {
+    const loginSuccess = localStorage.getItem("loginSuccess");
+
+    if (loginSuccess === "true") {
+      toast("Usuário autenticado com sucesso.", {
+        duration: 4000,
+        style: {
+          backgroundColor: "green",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          padding: "20px",
+        },
+        position: "top-right",
+      });
+      setShowAlert(true);
+      localStorage.removeItem("loginSuccess");
+    }
+  }, []);
+
   const filteredTasks = tasks
     .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
     .filter((task) => (status !== "all" ? task.status === status : true));
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      {showAlert && <AlertDialog />}
       <Header
         search={search}
         setSearch={setSearch}
