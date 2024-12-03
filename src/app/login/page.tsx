@@ -1,13 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import axios from "../../lib/axios";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [tab, setTab] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const router = useRouter();
 
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +21,7 @@ export default function Login() {
       const { token } = response.data;
       localStorage.setItem("token", token);
 
-      window.location.href = "/dashboard";
+      router.push("/dashboard");
     } catch (err) {
       console.error(err);
       setError("E-mail ou senha inválidos. Tente novamente.");

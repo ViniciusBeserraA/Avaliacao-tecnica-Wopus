@@ -15,7 +15,8 @@ export default function Dashboard() {
   const [error, setError] = useState<string>("");
 
   const handleLogout = () => {
-    router.push("/login");
+    localStorage.removeItem("token");
+    router.replace("/login");
   };
 
   const fetchTasks = async () => {
@@ -41,13 +42,16 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    fetchTasks();
+    if (!localStorage.getItem("token")) {
+      router.replace("/login");
+    }
+  }, [router]);
+
   const filteredTasks = tasks
     .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
     .filter((task) => (status !== "all" ? task.status === status : true));
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
