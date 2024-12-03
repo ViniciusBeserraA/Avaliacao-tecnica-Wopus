@@ -105,7 +105,7 @@ export default function TaskTable({ tasks }: TableComponentProps) {
                   className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                     task.status === "Pendente"
                       ? "bg-orange-100 text-orange-800"
-                      : task.status === "Em andamento"
+                      : task.status === "Em progresso"
                       ? "bg-blue-100 text-blue-800"
                       : "bg-green-100 text-green-800"
                   }`}
