@@ -3,14 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, LogOut } from "lucide-react";
 import TaskDialog from "../taskDialog/create";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type HeaderProps = {
   search: string;
   setSearch: (value: string) => void;
+  status: string;
+  setStatus: (value: string) => void;
   onLogout: () => void;
 };
 
-export default function Header({ search, setSearch, onLogout }: HeaderProps) {
+export default function Header({
+  search,
+  setSearch,
+  status,
+  setStatus,
+  onLogout,
+}: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [task, setTask] = useState({ title: "", description: "" });
 
@@ -23,6 +38,14 @@ export default function Header({ search, setSearch, onLogout }: HeaderProps) {
   const openCreateDialog = () => {
     setTask({ title: "", description: "" });
     setIsOpen(true);
+  };
+
+  const handleStatusChange = (value: string) => {
+    if (value === "todos") {
+      setStatus("");
+    } else {
+      setStatus(value);
+    }
   };
 
   return (
@@ -49,6 +72,19 @@ export default function Header({ search, setSearch, onLogout }: HeaderProps) {
           placeholder="Pesquisar tarefa..."
           className="w-full max-w-md border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
+        <Select value={status} onValueChange={handleStatusChange}>
+          <SelectTrigger className="w-1/6 bg-primary text-white max-w-md border border-gray-300 rounded-lg shadow-sm focus:outline-none">
+            <SelectValue placeholder="Selecione o status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="todos">Todos</SelectItem>
+            <SelectItem value="Pendente">Pendente</SelectItem>
+            <SelectItem value="Em progresso">Em progresso</SelectItem>
+            <SelectItem value="Concluída">Concluída</SelectItem>
+          </SelectContent>
+        </Select>
+
         <Button
           variant="outline"
           onClick={openCreateDialog}

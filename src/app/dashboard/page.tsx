@@ -9,7 +9,7 @@ const tasks = [
     id: 1,
     title: "Tarefa 1",
     description: "Descrição da tarefa 1",
-    status: "Em andamento",
+    status: "Em progresso",
   },
   {
     id: 2,
@@ -27,24 +27,38 @@ const tasks = [
     id: 4,
     title: "Tarefa 4",
     description: "Descrição da tarefa 4",
-    status: "Em andamento",
+    status: "Em progresso",
   },
 ];
 
 export default function Dashboard() {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
+  const [status, setStatus] = useState("all");
   const handleLogout = () => {
     router.push("/login");
   };
 
-  const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredTasks = tasks
+    .filter((task) => {
+      return task.title.toLowerCase().includes(search.toLowerCase());
+    })
+    .filter((task) => {
+      if (status) {
+        return task.status === status;
+      }
+      return true;
+    });
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <Header search={search} setSearch={setSearch} onLogout={handleLogout} />
+      <Header
+        search={search}
+        setSearch={setSearch}
+        onLogout={handleLogout}
+        status={status}
+        setStatus={setStatus}
+      />
       <TableComponent tasks={filteredTasks} />
     </div>
   );

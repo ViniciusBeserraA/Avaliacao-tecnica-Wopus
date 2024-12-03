@@ -83,7 +83,7 @@ export default function EditTaskDialog({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Pendente">Pendente</SelectItem>
-              <SelectItem value="Em andamento">Em andamento</SelectItem>
+              <SelectItem value="Em progresso">Em progresso</SelectItem>
               <SelectItem value="Concluída">Concluída</SelectItem>
             </SelectContent>
           </Select>
