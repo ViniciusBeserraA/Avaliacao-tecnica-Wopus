@@ -248,20 +248,22 @@ export default function TaskTable({
                         Excluir tarefa
                       </span>
                     </div>
-                    <div className="relative group">
-                      <button
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setIsDoneOpen(true);
-                        }}
-                        className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
-                      >
-                        <Check className="w-4 h-4" />
-                      </button>
-                      <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
-                        Finalizar tarefa
-                      </span>
-                    </div>
+                    {task.status !== "CONCLUIDA" && (
+                      <div className="relative group">
+                        <button
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setIsDoneOpen(true);
+                          }}
+                          className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                        <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
+                          Finalizar tarefa
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
