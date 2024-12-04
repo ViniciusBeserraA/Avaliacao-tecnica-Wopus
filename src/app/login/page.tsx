@@ -10,13 +10,11 @@ export default function Login() {
   const [tab, setTab] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
   const router = useRouter();
 
   const handleSubmitLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     try {
       const { data } = await axios.post("/auth/login", { email, password });
@@ -26,7 +24,6 @@ export default function Login() {
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || "Erro desconhecido";
       toast(errorMessage, {
-        duration: 4000,
         style: {
           backgroundColor: "red",
           color: "white",
@@ -39,17 +36,38 @@ export default function Login() {
     }
   };
 
-  const handleSubmitRegister = async (e: React.FormEvent) => {
+  const handleSubmitCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+
+    const toastStyle = {
+      backgroundColor: "red",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "12px",
+    };
 
     try {
-      await axios.post("/auth/register", { email, password });
-      alert("Cadastro realizado com sucesso! Faça login para continuar.");
-      setTab("login");
-    } catch (err) {
-      console.error(err);
-      setError("Erro ao cadastrar. Tente novamente.");
+      const response = await axios.post("/users", { email, password });
+      const { token, message } = response.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("loginSuccess", "true");
+
+      toast(message || "Usuário criado com sucesso!", {
+        style: { ...toastStyle, backgroundColor: "green" },
+        position: "top-right",
+      });
+
+      router.push("/login");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Erro ao criar usuário.";
+
+      toast(errorMessage, {
+        style: toastStyle,
+        position: "top-right",
+      });
     }
   };
 
@@ -127,8 +145,7 @@ export default function Login() {
         )}
 
         {tab === "register" && (
-          <form onSubmit={handleSubmitRegister}>
-            {error && <p className="text-red-500 text-center">{error}</p>}
+          <form onSubmit={handleSubmitCreateUser}>
             <div className="mb-4">
               <label htmlFor="email" className="text-white text-md block mb-2">
                 E-mail

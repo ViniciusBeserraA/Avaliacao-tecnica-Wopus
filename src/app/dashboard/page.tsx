@@ -16,7 +16,6 @@ export default function Dashboard() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  // Paginação
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [tasksPerPage, setTasksPerPage] = useState<number>(10);
   const [totalTasks, setTotalTasks] = useState<number>(0);
@@ -140,10 +139,6 @@ export default function Dashboard() {
       localStorage.removeItem("loginSuccess");
     }
   }, []);
-
-  const filteredTasks = tasks
-    .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
-    .filter((task) => (status !== "all" ? task.status === status : true));
 
   const changePage = (page: number) => {
     setCurrentPage(page);
