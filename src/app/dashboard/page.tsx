@@ -60,6 +60,48 @@ export default function Dashboard() {
     }
   };
 
+  // Atualizando
+  const updateTask = async (updatedTask: any) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put("/tasks", updatedTask, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Tarefa atualizada:", response.data);
+      loadTasks();
+    } catch (error: any) {
+      console.error("Erro ao atualizar tarefa:", error);
+      setError("Erro ao atualizar tarefa");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Excluindo
+  const deleteTask = async (taskId: string) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Tarefa excluída com sucesso");
+
+      loadTasks();
+    } catch (error: any) {
+      console.error("Erro ao excluir tarefa:", error);
+      setError("Erro ao excluir tarefa");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadTasks();
     if (!localStorage.getItem("token")) {
@@ -110,6 +152,8 @@ export default function Dashboard() {
         <TableComponent
           tasks={filteredTasks}
           loadTasks={loadTasks}
+          updatedTask={updateTask}
+          deleteTask={deleteTask}
           loading={loading}
           error={error}
         />

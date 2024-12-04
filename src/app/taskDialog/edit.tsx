@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogContent,
@@ -9,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Select,
   SelectItem,
@@ -17,30 +18,50 @@ import {
   SelectValue,
   SelectContent,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
 type EditTaskDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  task: { title: string; description: string; status: string };
-  onSave: (updatedTask: {
-    title: string;
-    description: string;
-    status: string;
-  }) => void;
+  updatedTask: (updatedTask: any) => Promise<void>;
+  initialTask: any | null;
 };
 
 export default function EditTaskDialog({
   isOpen,
   setIsOpen,
-  task,
-  onSave,
+  updatedTask,
+  initialTask,
 }: EditTaskDialogProps) {
-  const [updatedTask, setUpdatedTask] = useState(task);
+  const [task, setTask] = useState<any | null>(initialTask);
 
-  const handleSave = () => {
-    if (updatedTask.title && updatedTask.description && updatedTask.status) {
-      onSave(updatedTask);
+  useEffect(() => {
+    setTask(initialTask);
+  }, [initialTask]);
+
+  const handleSave = async () => {
+    if (!task.title || !task.description || !task.status) {
+      toast("Título, descrição e status são obrigatórios.", {
+        style: { backgroundColor: "red", color: "white" },
+        position: "top-right",
+      });
+      return;
+    }
+
+    try {
+      await updatedTask(task);
+      toast("Tarefa atualizada com sucesso!", {
+        style: { backgroundColor: "green", color: "white" },
+        position: "top-right",
+      });
+
       setIsOpen(false);
+    } catch (error: any) {
+      console.error("Erro ao atualizar tarefa:", error);
+      toast(error.response?.data?.message || "Erro ao atualizar tarefa.", {
+        style: { backgroundColor: "red", color: "white" },
+        position: "top-right",
+      });
     }
   };
 
@@ -57,34 +78,28 @@ export default function EditTaskDialog({
         <div className="space-y-4">
           <Input
             type="text"
-            value={updatedTask.title}
-            onChange={(e) =>
-              setUpdatedTask({ ...updatedTask, title: e.target.value })
-            }
+            value={task?.title}
+            onChange={(e) => setTask({ ...task, title: e.target.value })}
             placeholder="Título da tarefa"
             className="w-full"
           />
           <Textarea
-            value={updatedTask.description}
-            onChange={(e) =>
-              setUpdatedTask({ ...updatedTask, description: e.target.value })
-            }
+            value={task?.description}
+            onChange={(e) => setTask({ ...task, description: e.target.value })}
             placeholder="Descrição da tarefa"
             className="w-full"
           />
           <Select
-            value={updatedTask.status}
-            onValueChange={(value) =>
-              setUpdatedTask({ ...updatedTask, status: value })
-            }
+            value={task?.status}
+            onValueChange={(value) => setTask({ ...task, status: value })}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Selecione o status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Pendente">Pendente</SelectItem>
-              <SelectItem value="Em progresso">Em progresso</SelectItem>
-              <SelectItem value="Concluída">Concluída</SelectItem>
+              <SelectItem value="PENDENTE">Pendente</SelectItem>
+              <SelectItem value="EM_PROGRESSO">Em progresso</SelectItem>
+              <SelectItem value="CONCLUIDA">Concluída</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -31,6 +31,7 @@ export default function CreateTaskDialog({
     if (!task.title || !task.description) {
       toast("Título e descrição são obrigatórios.", {
         style: { backgroundColor: "red", color: "white" },
+        position: "top-right",
       });
       return;
     }
@@ -38,15 +39,17 @@ export default function CreateTaskDialog({
     setLoading(true);
 
     try {
-      await createTask(task); // Certifique-se de aguardar o resultado da função assíncrona
+      await createTask(task);
 
       toast("Tarefa criada com sucesso!", {
         style: { backgroundColor: "green", color: "white" },
+        position: "top-right",
       });
     } catch (error: any) {
       console.error("Erro ao criar tarefa:", error);
       toast(error.response?.data?.message || "Erro ao criar tarefa.", {
         style: { backgroundColor: "red", color: "white" },
+        position: "top-right",
       });
     } finally {
       setLoading(false);
