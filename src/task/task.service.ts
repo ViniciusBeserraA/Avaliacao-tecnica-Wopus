@@ -81,22 +81,10 @@ export class TaskService {
   }
 
   async updateTask(taskDto: TaskDto): Promise<ApiResponse<any>> {
-    const task = await this.taskRepository.findTaskById(taskDto.id);
-
-    if (!task) {
-      throw new NotFoundException('Tarefa não encontrada');
-    }
-
-    const status = taskDto.status;
-
-    const completionDate =
-      status === TaskStatusEnumPrisma.CONCLUIDA ? new Date() : null;
-
     const updatedTask = await this.taskRepository.updateTask(taskDto.id, {
       ...taskDto,
-      status,
-      completionDate,
     });
+
     return {
       status: 'success',
       message: 'Dados alterados com sucesso',

@@ -70,11 +70,19 @@ export class TaskRepository {
   }
 
   async updateTask(id: string, updateData: Partial<Task>): Promise<Task> {
+    const task = await this.prisma.task.findUnique({ where: { id } });
+
+    if (!task) {
+      throw new Error('Task not found');
+    }
+    const completionDate =
+      updateData.status === 'CONCLUIDA' ? new Date() : null;
+
     return this.prisma.task.update({
       where: { id },
       data: {
         ...updateData,
-        completionDate: updateData.completionDate ?? undefined,
+        completionDate,
       },
     });
   }
