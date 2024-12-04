@@ -26,7 +26,11 @@ export default function Dashboard() {
   };
   //Requisicoes
   // Requisição com paginação
-  const loadTasks = async (page: number = currentPage, status: string = "") => {
+  const loadTasks = async (
+    page: number = currentPage,
+    title: string = "",
+    status: string = ""
+  ) => {
     setLoading(true);
     setError("");
     const token = localStorage.getItem("token");
@@ -38,6 +42,7 @@ export default function Dashboard() {
         params: {
           page,
           limit: tasksPerPage,
+          title,
           status,
         },
       });

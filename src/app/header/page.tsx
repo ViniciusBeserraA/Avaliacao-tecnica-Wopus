@@ -39,6 +39,11 @@ export default function Header({
     setIsOpen(true);
   };
 
+  const handleSearch = (search: string) => {
+    setSearch(search);
+    loadTasks(currentPage, search);
+  };
+
   const handleStatusChange = (value: string) => {
     if (value === "todos") {
       setStatus("");
@@ -68,7 +73,7 @@ export default function Header({
         <Input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
           placeholder="Pesquisar tarefa..."
           className="w-full max-w-md border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
