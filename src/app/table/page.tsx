@@ -7,7 +7,7 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { Edit, Trash } from "lucide-react";
+import { Check, Edit, Trash } from "lucide-react";
 import { useState } from "react";
 import TaskDialog from "../taskDialog/edit";
 import ConfirmDialog from "@/components/confirmDialog";
@@ -22,6 +22,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { toast } from "sonner";
 
 type Task = {
   id: number;
@@ -30,6 +31,7 @@ type Task = {
   status: string;
   creationDate: string;
   completionDate: "";
+  userId: string;
 };
 
 type TableComponentProps = {
@@ -58,6 +60,7 @@ export default function TaskTable({
 }: TableComponentProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const totalPages = Math.ceil(totalTasks / tasksPerPage);
@@ -89,10 +92,38 @@ export default function TaskTable({
     setIsEditOpen(true);
   };
 
+  const handleCompleteTask = async () => {
+    if (!selectedTask) return;
+
+    try {
+      const updatedData = {
+        id: selectedTask.id,
+        title: selectedTask.title,
+        description: selectedTask.description,
+        status: "CONCLUIDA",
+        userId: selectedTask.userId,
+      };
+
+      await updatedTask(updatedData);
+      toast("Tarefa finalizada com sucesso", {
+        style: { backgroundColor: "green", color: "white" },
+        position: "top-right",
+      });
+      setIsDoneOpen(false);
+      setSelectedTask(null);
+    } catch (error) {
+      console.error("Erro ao finalizar tarefa:", error);
+    }
+  };
+
   const handleDelete = async () => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask.id.toString());
+        toast("Tarefa excluida com sucesso", {
+          style: { backgroundColor: "green", color: "white" },
+          position: "top-right",
+        });
         setIsDeleteOpen(false);
         setSelectedTask(null);
       } catch (error) {
@@ -217,6 +248,20 @@ export default function TaskTable({
                         Excluir tarefa
                       </span>
                     </div>
+                    <div className="relative group">
+                      <button
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setIsDoneOpen(true);
+                        }}
+                        className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+                      >
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
+                        Finalizar tarefa
+                      </span>
+                    </div>
                   </div>
                 </TableCell>
               </TableRow>
@@ -260,6 +305,14 @@ export default function TaskTable({
         setIsOpen={setIsEditOpen}
         updatedTask={updatedTask}
         initialTask={selectedTask}
+      />
+
+      <ConfirmDialog
+        isOpen={isDoneOpen}
+        setIsOpen={setIsDoneOpen}
+        onConfirm={handleCompleteTask}
+        title="Finalizar Tarefa"
+        description="Essa ação não pode ser desfeita. Tem certeza de que deseja finalizar esta tarefa?"
       />
 
       {isDeleteOpen && (
