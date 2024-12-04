@@ -76,6 +76,7 @@ export default function TaskTable({
       pageNumbers.push(
         <PaginationItem key={i}>
           <PaginationLink
+            className="bg-primary text-white flex items-center hover:bg-red-700 hover:text-white"
             href="#"
             onClick={() => handlePageChange(i)}
             isActive={currentPage === i}
@@ -276,6 +277,7 @@ export default function TaskTable({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
+              className="bg-primary text-white flex items-center hover:bg-red-700 hover:text-white"
               href="#"
               onClick={() => handlePageChange(currentPage - 1)}
             >
@@ -293,6 +295,7 @@ export default function TaskTable({
 
           <PaginationItem>
             <PaginationNext
+              className="bg-primary text-white flex items-center hover:bg-red-700 hover:text-white"
               href="#"
               onClick={() => handlePageChange(currentPage + 1)}
             >

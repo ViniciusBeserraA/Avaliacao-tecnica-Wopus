@@ -16,7 +16,7 @@ import {
 type HeaderProps = {
   search: string;
   setSearch: (value: string) => void;
-  loadTasks: (currentPage: any, status: any) => void;
+  loadTasks: (currentPage: any, search: any, status: any) => void;
   onLogout: () => void;
   createTask: (task: any) => Promise<void>;
   currentPage: number;
@@ -41,7 +41,7 @@ export default function Header({
 
   const handleSearch = (search: string) => {
     setSearch(search);
-    loadTasks(currentPage, search);
+    loadTasks(currentPage, search, status);
   };
 
   const handleStatusChange = (value: string) => {
@@ -50,7 +50,7 @@ export default function Header({
     } else {
       setStatus(value);
     }
-    loadTasks(currentPage, value === "todos" ? "" : value);
+    loadTasks(currentPage, search, value === "todos" ? "" : value);
   };
 
   return (
