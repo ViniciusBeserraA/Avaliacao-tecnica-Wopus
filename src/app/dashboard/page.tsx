@@ -19,13 +19,12 @@ export default function Dashboard() {
     localStorage.removeItem("token");
     router.replace("/login");
   };
-
-  const fetchTasks = async () => {
+  //Requisicoes
+  //listando todas
+  const loadTasks = async () => {
     setLoading(true);
     setError("");
-
     const token = localStorage.getItem("token");
-
     try {
       const response = await axios.get("/tasks", {
         headers: {
@@ -41,8 +40,28 @@ export default function Dashboard() {
     }
   };
 
+  //cadastrando
+  const createTask = async (task: any) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post("/tasks", task, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Tarefa criada:", response.data);
+      loadTasks();
+    } catch (error: any) {
+      console.error("Erro ao criar tarefa:", error);
+      setError("Erro ao criar tarefa");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchTasks();
+    loadTasks();
     if (!localStorage.getItem("token")) {
       router.replace("/login");
     }
@@ -80,6 +99,7 @@ export default function Dashboard() {
         onLogout={handleLogout}
         status={status}
         setStatus={setStatus}
+        createTask={createTask}
       />
 
       {loading ? (
@@ -87,7 +107,12 @@ export default function Dashboard() {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : (
-        <TableComponent tasks={filteredTasks} />
+        <TableComponent
+          tasks={filteredTasks}
+          loadTasks={loadTasks}
+          loading={loading}
+          error={error}
+        />
       )}
     </div>
   );

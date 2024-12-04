@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Table,
   TableHeader,
@@ -10,6 +11,7 @@ import { useEffect, useState } from "react";
 import TaskDialog from "../taskDialog/edit";
 import ConfirmDialog from "@/components/confirmDialog";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Task = {
   id: number;
@@ -22,9 +24,16 @@ type Task = {
 
 type TableComponentProps = {
   tasks: Task[];
+  loadTasks: () => void;
+  loading: boolean;
+  error: string;
 };
 
-export default function TaskTable({ tasks }: TableComponentProps) {
+export default function TaskTable({
+  tasks,
+  loading,
+  error,
+}: TableComponentProps) {
   useEffect(() => {
     console.log(tasks);
   });
@@ -104,82 +113,117 @@ export default function TaskTable({ tasks }: TableComponentProps) {
             <TableCell className="py-3 px-4 font-semibold">Ações</TableCell>
           </TableRow>
         </TableHeader>
+
         <TableBody>
-          {tasks.map((task, index) => (
-            <TableRow
-              key={task.id}
-              className={`${
-                index % 2 === 0 ? "" : "bg-white"
-              } transition duration-200`}
-            >
-              <TableCell className="py-2 px-4 text-gray-800">
-                {task.title}
-              </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800 break-words max-w-[200px]">
-                {task.description}
-              </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800">
-                {format(new Date(task.creationDate), "dd/MM/yyyy HH:mm:ss")}
-              </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800">
-                {task.completionDate
-                  ? format(new Date(task.completionDate), "dd/MM/yyyy HH:mm:ss")
-                  : "-"}
-              </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800">
-                <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                    task.status === "PENDENTE"
-                      ? "bg-orange-100 text-orange-800"
-                      : task.status === "Em progresso"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-green-100 text-green-800"
-                  }`}
-                >
-                  {task.status}
-                </span>
-              </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800">
-                <div className="flex space-x-2">
-                  <div className="relative group">
-                    <button
-                      className="w-8 h-8 flex items-center justify-center bg-yellow-500 text-white rounded-full hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-300"
-                      onClick={() => openEditDialog(task)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
-                      Alterar tarefa
-                    </span>
-                  </div>
-
-                  <div className="relative group">
-                    <button
-                      onClick={() => openDeleteDialog(task.id)}
-                      className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-                    >
-                      <Trash className="w-4 h-4" />
-                    </button>
-                    <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
-                      Excluir tarefa
-                    </span>
-                  </div>
-
-                  <div className="relative group">
-                    <button
-                      onClick={() => openDoneDialog(task.id)}
-                      className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                    </button>
-                    <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
-                      Finalizar tarefa
-                    </span>
-                  </div>
-                </div>
+          {loading ? (
+            [...Array(5)].map((_, index) => (
+              <TableRow key={index} className="transition duration-200">
+                <TableCell className="py-2 px-4">
+                  <Skeleton className="w-full h-6" />
+                </TableCell>
+                <TableCell className="py-3 px-4">
+                  <Skeleton className="w-full h-6" />
+                </TableCell>
+                <TableCell className="py-3 px-4">
+                  <Skeleton className="w-full h-6" />
+                </TableCell>
+                <TableCell className="py-3 px-4">
+                  <Skeleton className="w-full h-6" />
+                </TableCell>
+                <TableCell className="py-3 px-4">
+                  <Skeleton className="w-full h-6" />
+                </TableCell>
+                <TableCell className="py-3 px-4">
+                  <Skeleton className="w-full h-6" />
+                </TableCell>
+              </TableRow>
+            ))
+          ) : error ? (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center text-red-500">
+                {error}
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            tasks.map((task, index) => (
+              <TableRow
+                key={task.id}
+                className={`${
+                  index % 2 === 0 ? "" : "bg-white"
+                } transition duration-200`}
+              >
+                <TableCell className="py-2 px-4 text-gray-800">
+                  {task.title}
+                </TableCell>
+                <TableCell className="py-3 px-4 text-gray-800 break-words max-w-[200px]">
+                  {task.description}
+                </TableCell>
+                <TableCell className="py-3 px-4 text-gray-800">
+                  {format(new Date(task.creationDate), "dd/MM/yyyy HH:mm:ss")}
+                </TableCell>
+                <TableCell className="py-3 px-4 text-gray-800">
+                  {task.completionDate
+                    ? format(
+                        new Date(task.completionDate),
+                        "dd/MM/yyyy HH:mm:ss"
+                      )
+                    : "-"}
+                </TableCell>
+                <TableCell className="py-3 px-4 text-gray-800">
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                      task.status === "PENDENTE"
+                        ? "bg-orange-100 text-orange-800"
+                        : task.status === "Em progresso"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {task.status}
+                  </span>
+                </TableCell>
+                <TableCell className="py-3 px-4 text-gray-800">
+                  <div className="flex space-x-2">
+                    <div className="relative group">
+                      <button
+                        className="w-8 h-8 flex items-center justify-center bg-yellow-500 text-white rounded-full hover:bg-yellow-600 focus:outline-none focus:ring focus:ring-yellow-300"
+                        onClick={() => openEditDialog(task)}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
+                        Alterar tarefa
+                      </span>
+                    </div>
+
+                    <div className="relative group">
+                      <button
+                        onClick={() => openDeleteDialog(task.id)}
+                        className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </button>
+                      <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
+                        Excluir tarefa
+                      </span>
+                    </div>
+
+                    <div className="relative group">
+                      <button
+                        onClick={() => openDoneDialog(task.id)}
+                        className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </button>
+                      <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs text-white bg-black px-3 py-1 rounded-md whitespace-nowrap">
+                        Finalizar tarefa
+                      </span>
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 

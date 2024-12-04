@@ -11,17 +11,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import axios from "../../lib/axios";
 import { toast } from "sonner";
 
 type CreateTaskDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  createTask: (task: any) => Promise<void>;
 };
 
 export default function CreateTaskDialog({
   isOpen,
   setIsOpen,
+  createTask,
 }: CreateTaskDialogProps) {
   const [task, setTask] = useState({ title: "", description: "" });
   const [loading, setLoading] = useState(false);
@@ -37,21 +38,11 @@ export default function CreateTaskDialog({
     setLoading(true);
 
     try {
-      // Enviar a requisição para criar a tarefa
-      const token = localStorage.getItem("token");
-      const response = await axios.post("/tasks", task, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("Tarefa criada:", response.data);
+      await createTask(task); // Certifique-se de aguardar o resultado da função assíncrona
 
       toast("Tarefa criada com sucesso!", {
         style: { backgroundColor: "green", color: "white" },
       });
-
-      setIsOpen(false);
-      setTask({ title: "", description: "" }); // Limpar os campos após o envio
     } catch (error: any) {
       console.error("Erro ao criar tarefa:", error);
       toast(error.response?.data?.message || "Erro ao criar tarefa.", {
@@ -59,6 +50,7 @@ export default function CreateTaskDialog({
       });
     } finally {
       setLoading(false);
+      setIsOpen(false);
     }
   };
 
