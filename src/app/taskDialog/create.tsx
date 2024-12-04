@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogContent,
@@ -10,25 +11,54 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import axios from "../../lib/axios";
+import { toast } from "sonner";
 
 type CreateTaskDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onSave: (task: { title: string; description: string }) => void;
 };
 
 export default function CreateTaskDialog({
   isOpen,
   setIsOpen,
-  onSave,
 }: CreateTaskDialogProps) {
   const [task, setTask] = useState({ title: "", description: "" });
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = () => {
-    if (task.title && task.description) {
-      onSave(task);
+  const handleSave = async () => {
+    if (!task.title || !task.description) {
+      toast("Título e descrição são obrigatórios.", {
+        style: { backgroundColor: "red", color: "white" },
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Enviar a requisição para criar a tarefa
+      const token = localStorage.getItem("token");
+      const response = await axios.post("/tasks", task, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Tarefa criada:", response.data);
+
+      toast("Tarefa criada com sucesso!", {
+        style: { backgroundColor: "green", color: "white" },
+      });
+
       setIsOpen(false);
-      setTask({ title: "", description: "" });
+      setTask({ title: "", description: "" }); // Limpar os campos após o envio
+    } catch (error: any) {
+      console.error("Erro ao criar tarefa:", error);
+      toast(error.response?.data?.message || "Erro ao criar tarefa.", {
+        style: { backgroundColor: "red", color: "white" },
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,7 +92,9 @@ export default function CreateTaskDialog({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSave}>Criar Tarefa</Button>
+          <Button onClick={handleSave} disabled={loading}>
+            {loading ? "Salvando..." : "Criar Tarefa"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

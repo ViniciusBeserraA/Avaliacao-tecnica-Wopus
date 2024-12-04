@@ -6,15 +6,18 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Edit, Trash, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskDialog from "../taskDialog/edit";
 import ConfirmDialog from "@/components/confirmDialog";
+import { format } from "date-fns";
 
 type Task = {
   id: number;
   title: string;
   description: string;
   status: string;
+  creationDate: string;
+  completionDate: "";
 };
 
 type TableComponentProps = {
@@ -22,6 +25,10 @@ type TableComponentProps = {
 };
 
 export default function TaskTable({ tasks }: TableComponentProps) {
+  useEffect(() => {
+    console.log(tasks);
+  });
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [confirmationType, setConfirmationType] = useState<
@@ -32,13 +39,22 @@ export default function TaskTable({ tasks }: TableComponentProps) {
     title: "",
     description: "",
     status: "",
+    creationDate: "",
+    completionDate: "",
   });
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
   const [taskToDone, setTaskToDone] = useState<number | null>(null);
 
   const handleEditTask = () => {
     setIsEditOpen(false);
-    setTask({ id: 0, title: "", description: "", status: "" });
+    setTask({
+      id: 0,
+      title: "",
+      description: "",
+      status: "",
+      creationDate: "",
+      completionDate: "",
+    });
   };
 
   const openEditDialog = (taskToEdit: Task) => {
@@ -76,9 +92,14 @@ export default function TaskTable({ tasks }: TableComponentProps) {
       <Table className="rounded-lg overflow-hidden shadow-md">
         <TableHeader>
           <TableRow className="bg-primary text-white hover:bg-primary">
-            <TableCell className="py-3 px-4 font-semibold">ID</TableCell>
-            <TableCell className="py-3 px-4 font-semibold">Título</TableCell>
+            <TableCell className="py-2 px-4 font-semibold">Título</TableCell>
             <TableCell className="py-3 px-4 font-semibold">Descrição</TableCell>
+            <TableCell className="py-3 px-4 font-semibold">
+              Data de registro
+            </TableCell>
+            <TableCell className="py-3 px-4 font-semibold">
+              Data de conclusão
+            </TableCell>
             <TableCell className="py-3 px-4 font-semibold">Status</TableCell>
             <TableCell className="py-3 px-4 font-semibold">Ações</TableCell>
           </TableRow>
@@ -91,19 +112,24 @@ export default function TaskTable({ tasks }: TableComponentProps) {
                 index % 2 === 0 ? "" : "bg-white"
               } transition duration-200`}
             >
-              <TableCell className="py-3 px-4 text-gray-800">
-                {task.id}
-              </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800">
+              <TableCell className="py-2 px-4 text-gray-800">
                 {task.title}
               </TableCell>
-              <TableCell className="py-3 px-4 text-gray-800">
+              <TableCell className="py-3 px-4 text-gray-800 break-words max-w-[200px]">
                 {task.description}
+              </TableCell>
+              <TableCell className="py-3 px-4 text-gray-800">
+                {format(new Date(task.creationDate), "dd/MM/yyyy HH:mm:ss")}
+              </TableCell>
+              <TableCell className="py-3 px-4 text-gray-800">
+                {task.completionDate
+                  ? format(new Date(task.completionDate), "dd/MM/yyyy HH:mm:ss")
+                  : "-"}
               </TableCell>
               <TableCell className="py-3 px-4 text-gray-800">
                 <span
                   className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                    task.status === "Pendente"
+                    task.status === "PENDENTE"
                       ? "bg-orange-100 text-orange-800"
                       : task.status === "Em progresso"
                       ? "bg-blue-100 text-blue-800"

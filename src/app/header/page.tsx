@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,12 +30,6 @@ export default function Header({
 }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [task, setTask] = useState({ title: "", description: "" });
-
-  const handleCreateTask = () => {
-    console.log("Tarefa criada:", task);
-    setIsOpen(false);
-    setTask({ title: "", description: "" });
-  };
 
   const openCreateDialog = () => {
     setTask({ title: "", description: "" });
@@ -95,11 +91,7 @@ export default function Header({
         </Button>
       </div>
 
-      <TaskDialog
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        onSave={handleCreateTask}
-      />
+      <TaskDialog isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Header from "../header/page";
 import TableComponent from "../table/page";
 import axios from "../../lib/axios";
-import AlertDialog from "@/components/alertDialog";
 import { toast } from "sonner";
 
 export default function Dashboard() {
@@ -15,7 +14,6 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [showAlert, setShowAlert] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -65,7 +63,7 @@ export default function Dashboard() {
         },
         position: "top-right",
       });
-      setShowAlert(true);
+
       localStorage.removeItem("loginSuccess");
     }
   }, []);
@@ -76,7 +74,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {showAlert && <AlertDialog />}
       <Header
         search={search}
         setSearch={setSearch}
