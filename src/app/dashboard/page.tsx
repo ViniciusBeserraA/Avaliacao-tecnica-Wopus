@@ -66,7 +66,6 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Tarefa criada:", response.data);
       loadTasks();
     } catch (error: any) {
       console.error("Erro ao criar tarefa:", error);
@@ -81,12 +80,12 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put("/tasks", updatedTask, {
+      await axios.put("/tasks", updatedTask, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Tarefa atualizada:", response.data);
+
       loadTasks();
     } catch (error: any) {
       console.error("Erro ao atualizar tarefa:", error);
@@ -106,8 +105,6 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log("Tarefa excluída com sucesso");
 
       loadTasks();
     } catch (error: any) {
