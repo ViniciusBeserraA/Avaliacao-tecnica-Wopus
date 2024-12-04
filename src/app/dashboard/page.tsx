@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useEffect } from "react";
@@ -15,13 +16,18 @@ export default function Dashboard() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
+  // Paginação
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tasksPerPage, setTasksPerPage] = useState<number>(10);
+  const [totalTasks, setTotalTasks] = useState<number>(0);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.replace("/login");
   };
   //Requisicoes
-  //listando todas
-  const loadTasks = async () => {
+  // Requisição com paginação
+  const loadTasks = async (page: number = currentPage) => {
     setLoading(true);
     setError("");
     const token = localStorage.getItem("token");
@@ -30,9 +36,14 @@ export default function Dashboard() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          page,
+          limit: tasksPerPage,
+        },
       });
 
       setTasks(response.data.tasks);
+      setTotalTasks(response.data.total);
     } catch {
       setError("Erro ao carregar as tarefas.");
     } finally {
@@ -107,7 +118,7 @@ export default function Dashboard() {
     if (!localStorage.getItem("token")) {
       router.replace("/login");
     }
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     const loginSuccess = localStorage.getItem("loginSuccess");
@@ -133,6 +144,11 @@ export default function Dashboard() {
     .filter((task) => task.title.toLowerCase().includes(search.toLowerCase()))
     .filter((task) => (status !== "all" ? task.status === status : true));
 
+  const changePage = (page: number) => {
+    setCurrentPage(page);
+    loadTasks(page);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <Header
@@ -156,6 +172,10 @@ export default function Dashboard() {
           deleteTask={deleteTask}
           loading={loading}
           error={error}
+          totalTasks={totalTasks}
+          currentPage={currentPage}
+          tasksPerPage={tasksPerPage}
+          changePage={changePage}
         />
       )}
     </div>

@@ -12,6 +12,15 @@ import TaskDialog from "../taskDialog/edit";
 import ConfirmDialog from "@/components/confirmDialog";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type Task = {
   id: number;
@@ -29,6 +38,10 @@ type TableComponentProps = {
   deleteTask: (id: string) => Promise<void>;
   loading: boolean;
   error: string;
+  totalTasks: number;
+  currentPage: number;
+  tasksPerPage: number;
+  changePage: (page: number) => void;
 };
 
 export default function TaskTable({
@@ -37,11 +50,39 @@ export default function TaskTable({
   error,
   updatedTask,
   deleteTask,
+  totalTasks,
+  currentPage,
+  tasksPerPage,
+  changePage,
 }: TableComponentProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
+  const totalPages = Math.ceil(totalTasks / tasksPerPage);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    changePage(page);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <PaginationItem key={i}>
+          <PaginationLink
+            href="#"
+            onClick={() => handlePageChange(i)}
+            isActive={currentPage === i}
+          >
+            {i}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+    return pageNumbers;
+  };
   const handleEdit = (taskToEdit: Task) => {
     setSelectedTask(taskToEdit);
     setIsEditOpen(true);
@@ -182,6 +223,36 @@ export default function TaskTable({
           )}
         </TableBody>
       </Table>
+
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Anterior
+            </PaginationPrevious>
+          </PaginationItem>
+
+          {renderPageNumbers()}
+
+          {totalPages > 5 && (
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+          )}
+
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              Próximo
+            </PaginationNext>
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       <TaskDialog
         isOpen={isEditOpen}
