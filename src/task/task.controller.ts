@@ -30,14 +30,13 @@ export class TaskController {
   @UseGuards(AuthGuard)
   async findAllTasks(
     @Query('page') page = 1,
-    @Query('limit') limit = 10, // Permite qualquer valor para limit
+    @Query('limit') limit = 10,
     @GetUser() userId: string,
     @Query('title') title?: string,
     @Query('status') status?: string,
   ): Promise<{ tasks: Task[]; total: number; page: number; limit: number }> {
-    // Garantir que 'page' e 'limit' sejam números inteiros válidos
-    const pageNumber = Math.max(1, parseInt(page.toString(), 10)); // Garantir que 'page' seja ao menos 1
-    const limitNumber = Math.max(1, parseInt(limit.toString(), 10)); // Garantir que 'limit' seja ao menos 1
+    const pageNumber = Math.max(1, parseInt(page.toString(), 10));
+    const limitNumber = Math.max(1, parseInt(limit.toString(), 10));
 
     return this.TaskService.findAllTasks(
       { title, status },
