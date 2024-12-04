@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import {
@@ -8,7 +9,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Check, Edit, Trash } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskDialog from "../taskDialog/edit";
 import ConfirmDialog from "@/components/confirmDialog";
 import { format } from "date-fns";
@@ -23,6 +24,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { toast } from "sonner";
+import taskService from "@/services/taskService";
 
 type Task = {
   id: number;
@@ -36,9 +38,6 @@ type Task = {
 
 type TableComponentProps = {
   tasks: Task[];
-  loadTasks: () => void;
-  updatedTask: (task: any) => Promise<void>;
-  deleteTask: (id: string) => Promise<void>;
   loading: boolean;
   error: string;
   totalTasks: number;
@@ -47,21 +46,42 @@ type TableComponentProps = {
   changePage: (page: number) => void;
 };
 
-export default function TaskTable({
-  tasks,
-  loading,
-  error,
-  updatedTask,
-  deleteTask,
-  totalTasks,
-  currentPage,
-  tasksPerPage,
-  changePage,
-}: TableComponentProps) {
+export default function TaskTable({ error }: TableComponentProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tasksPerPage, setTasksPerPage] = useState<number>(10);
+  const [totalTasks, setTotalTasks] = useState<number>(0);
+
+  const { loadTasks, updateTask, deleteTask } = taskService();
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      setLoading(true);
+      try {
+        const response = await loadTasks(currentPage);
+        setTasks(response.tasks);
+        setTotalTasks(response.total);
+      } catch (err) {
+        console.log("Erro ao carregar as tarefas", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, [currentPage]);
+
+  const changePage = (page: number) => {
+    setCurrentPage(page);
+    loadTasks(page);
+  };
 
   const totalPages = Math.ceil(totalTasks / tasksPerPage);
 
@@ -105,11 +125,16 @@ export default function TaskTable({
         userId: selectedTask.userId,
       };
 
-      await updatedTask(updatedData);
+      await updateTask(updatedData);
       toast("Tarefa finalizada com sucesso", {
         style: { backgroundColor: "green", color: "white" },
         position: "top-right",
       });
+
+      const response = await loadTasks(currentPage);
+      setTasks(response.tasks);
+      setTotalTasks(response.total);
+
       setIsDoneOpen(false);
       setSelectedTask(null);
     } catch (error) {
@@ -117,14 +142,41 @@ export default function TaskTable({
     }
   };
 
+  const handleUpdateTask = async (updatedTask: any) => {
+    try {
+      await updateTask(updatedTask);
+      toast("Tarefa atualizada com sucesso", {
+        style: { backgroundColor: "green", color: "white" },
+        position: "top-right",
+      });
+
+      const response = await loadTasks(currentPage);
+      setTasks(response.tasks);
+      setTotalTasks(response.total);
+
+      setIsEditOpen(false);
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+      toast("Erro ao atualizar tarefa.", {
+        style: { backgroundColor: "red", color: "white" },
+        position: "top-right",
+      });
+    }
+  };
+
   const handleDelete = async () => {
     if (selectedTask) {
       try {
         await deleteTask(selectedTask.id.toString());
-        toast("Tarefa excluida com sucesso", {
+        toast("Tarefa excluída com sucesso", {
           style: { backgroundColor: "green", color: "white" },
           position: "top-right",
         });
+
+        const response = await loadTasks(currentPage);
+        setTasks(response.tasks);
+        setTotalTasks(response.total);
+
         setIsDeleteOpen(false);
         setSelectedTask(null);
       } catch (error) {
@@ -306,10 +358,11 @@ export default function TaskTable({
       </Pagination>
 
       <TaskDialog
+        loadTasks={loadTasks}
         isOpen={isEditOpen}
         setIsOpen={setIsEditOpen}
-        updatedTask={updatedTask}
         initialTask={selectedTask}
+        handleUpdateTask={handleUpdateTask}
       />
 
       <ConfirmDialog

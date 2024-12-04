@@ -18,7 +18,6 @@ type HeaderProps = {
   setSearch: (value: string) => void;
   loadTasks: (currentPage: any, search: any, status: any) => void;
   onLogout: () => void;
-  createTask: (task: any) => Promise<void>;
   currentPage: number;
 };
 
@@ -27,7 +26,6 @@ export default function Header({
   setSearch,
   loadTasks,
   onLogout,
-  createTask,
   currentPage,
 }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -100,11 +98,7 @@ export default function Header({
         </Button>
       </div>
 
-      <TaskDialog
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        createTask={createTask}
-      />
+      <TaskDialog isOpen={isOpen} setIsOpen={setIsOpen} loadTasks={loadTasks} />
     </div>
   );
 }

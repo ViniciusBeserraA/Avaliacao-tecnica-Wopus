@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
 import {
   Select,
   SelectItem,
@@ -20,49 +20,35 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
-type EditTaskDialogProps = {
+type TaskDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  updatedTask: (updatedTask: any) => Promise<void>;
+  handleUpdateTask: (updatedTask: any) => Promise<void>;
   initialTask: any | null;
+  loadTasks: (currentPage: number) => void;
 };
 
-export default function EditTaskDialog({
+export default function TaskDialog({
   isOpen,
   setIsOpen,
-  updatedTask,
+  handleUpdateTask,
   initialTask,
-}: EditTaskDialogProps) {
+}: TaskDialogProps) {
   const [task, setTask] = useState<any | null>(initialTask);
 
   useEffect(() => {
     setTask(initialTask);
   }, [initialTask]);
 
-  const handleSave = async () => {
-    if (!task.title || !task.description || !task.status) {
+  const handleSave = () => {
+    if (!task?.title || !task?.description || !task?.status) {
       toast("Título, descrição e status são obrigatórios.", {
         style: { backgroundColor: "red", color: "white" },
         position: "top-right",
       });
       return;
     }
-
-    try {
-      await updatedTask(task);
-      toast("Tarefa atualizada com sucesso!", {
-        style: { backgroundColor: "green", color: "white" },
-        position: "top-right",
-      });
-
-      setIsOpen(false);
-    } catch (error: any) {
-      console.error("Erro ao atualizar tarefa:", error);
-      toast(error.response?.data?.message || "Erro ao atualizar tarefa.", {
-        style: { backgroundColor: "red", color: "white" },
-        position: "top-right",
-      });
-    }
+    handleUpdateTask(task);
   };
 
   return (
@@ -78,19 +64,19 @@ export default function EditTaskDialog({
         <div className="space-y-4">
           <Input
             type="text"
-            value={task?.title}
+            value={task?.title || ""}
             onChange={(e) => setTask({ ...task, title: e.target.value })}
             placeholder="Título da tarefa"
             className="w-full"
           />
           <Textarea
-            value={task?.description}
+            value={task?.description || ""}
             onChange={(e) => setTask({ ...task, description: e.target.value })}
             placeholder="Descrição da tarefa"
             className="w-full"
           />
           <Select
-            value={task?.status}
+            value={task?.status || ""}
             onValueChange={(value) => setTask({ ...task, status: value })}
           >
             <SelectTrigger className="w-full">

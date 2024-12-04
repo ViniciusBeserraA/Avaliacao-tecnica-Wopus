@@ -11,23 +11,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import taskService from "../../services/taskService";
 import { toast } from "sonner";
 
 type CreateTaskDialogProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  createTask: (task: any) => Promise<void>;
+  loadTasks: (currentPage: any, search: any, status: any) => void;
 };
 
 export default function CreateTaskDialog({
   isOpen,
   setIsOpen,
-  createTask,
+  loadTasks,
 }: CreateTaskDialogProps) {
   const [task, setTask] = useState({ title: "", description: "" });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSave = async () => {
+  const { createTask } = taskService();
+
+  const handleCreateTask = async () => {
     if (!task.title || !task.description) {
       toast("Título e descrição são obrigatórios.", {
         style: { backgroundColor: "red", color: "white" },
@@ -36,15 +39,16 @@ export default function CreateTaskDialog({
       return;
     }
 
-    setLoading(true);
-
     try {
+      setLoading(true);
       await createTask(task);
 
       toast("Tarefa criada com sucesso!", {
         style: { backgroundColor: "green", color: "white" },
         position: "top-right",
       });
+
+      loadTasks(1, "", "");
     } catch (error: any) {
       console.error("Erro ao criar tarefa:", error);
       toast(error.response?.data?.message || "Erro ao criar tarefa.", {
@@ -52,8 +56,8 @@ export default function CreateTaskDialog({
         position: "top-right",
       });
     } finally {
-      setLoading(false);
       setIsOpen(false);
+      setLoading(false);
     }
   };
 
@@ -87,7 +91,7 @@ export default function CreateTaskDialog({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={loading}>
+          <Button onClick={handleCreateTask} disabled={loading}>
             {loading ? "Salvando..." : "Criar Tarefa"}
           </Button>
         </DialogFooter>

@@ -5,140 +5,34 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../header/page";
 import TableComponent from "../table/page";
-import axios from "../../lib/axios";
-import { toast } from "sonner";
+import taskService from "../../services/taskService";
 
 export default function Dashboard() {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
-  const [status, setStatus] = useState("all");
+  const [status, setStatus] = useState<string>("");
   const [tasks, setTasks] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [tasksPerPage, setTasksPerPage] = useState<number>(10);
   const [totalTasks, setTotalTasks] = useState<number>(0);
 
+  const {
+    loading,
+
+    loadTasks,
+  } = taskService();
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.replace("/login");
   };
-  //Requisicoes
-  // Requisição com paginação
-  const loadTasks = async (
-    page: number = currentPage,
-    title: string = "",
-    status: string = ""
-  ) => {
-    setLoading(true);
-    setError("");
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.get("/tasks", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          page,
-          limit: tasksPerPage,
-          title,
-          status,
-        },
-      });
-
-      setTasks(response.data.tasks);
-      setTotalTasks(response.data.total);
-    } catch {
-      setError("Erro ao carregar as tarefas.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  //cadastrando
-  const createTask = async (task: any) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post("/tasks", task, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      loadTasks();
-    } catch (error: any) {
-      console.error("Erro ao criar tarefa:", error);
-      setError("Erro ao criar tarefa");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Atualizando
-  const updateTask = async (updatedTask: any) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put("/tasks", updatedTask, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      loadTasks();
-    } catch (error: any) {
-      console.error("Erro ao atualizar tarefa:", error);
-      setError("Erro ao atualizar tarefa");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Excluindo
-  const deleteTask = async (taskId: string) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`/tasks/${taskId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      loadTasks();
-    } catch (error: any) {
-      console.error("Erro ao excluir tarefa:", error);
-      setError("Erro ao excluir tarefa");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    loadTasks();
+    loadTasks(currentPage, search, status);
     if (!localStorage.getItem("token")) {
       router.replace("/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    const loginSuccess = localStorage.getItem("loginSuccess");
-
-    if (loginSuccess === "true") {
-      toast("Usuário autenticado com sucesso.", {
-        duration: 4000,
-        style: {
-          backgroundColor: "green",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          padding: "20px",
-        },
-        position: "top-right",
-      });
-
-      localStorage.removeItem("loginSuccess");
     }
   }, []);
 
@@ -152,9 +46,8 @@ export default function Dashboard() {
       <Header
         search={search}
         setSearch={setSearch}
-        onLogout={handleLogout}
         loadTasks={loadTasks}
-        createTask={createTask}
+        onLogout={handleLogout}
         currentPage={currentPage}
       />
 
@@ -165,9 +58,6 @@ export default function Dashboard() {
       ) : (
         <TableComponent
           tasks={tasks}
-          loadTasks={loadTasks}
-          updatedTask={updateTask}
-          deleteTask={deleteTask}
           loading={loading}
           error={error}
           totalTasks={totalTasks}
