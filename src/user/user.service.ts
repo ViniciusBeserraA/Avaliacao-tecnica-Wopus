@@ -13,8 +13,8 @@ export class UserService {
   ) {}
 
   async create(newUser: UserDto): Promise<ApiResponse<any>> {
-    const userNew = this.findByEmail(newUser.email);
-    if (!userNew) {
+    const existingUser = this.findByEmail(newUser.email);
+    if (existingUser) {
       throw new ConflictException(
         `Usuário com o email ${newUser.email} já está registrado.`,
       );
