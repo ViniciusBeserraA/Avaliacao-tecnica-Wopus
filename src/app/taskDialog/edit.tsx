@@ -70,7 +70,7 @@ export default function EditTaskDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar Tarefa</DialogTitle>
-          <DialogDescription>
+          <DialogDescription style={{ marginTop: "15px" }}>
             Altere os campos abaixo para editar a tarefa.
           </DialogDescription>
         </DialogHeader>

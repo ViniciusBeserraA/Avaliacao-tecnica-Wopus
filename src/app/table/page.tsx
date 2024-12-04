@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 import {
   Table,
   TableHeader,
@@ -224,7 +225,7 @@ export default function TaskTable({
         </TableBody>
       </Table>
 
-      <Pagination>
+      <Pagination style={{ marginTop: "10px" }}>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

@@ -32,8 +32,10 @@ export default function ConfirmDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <DialogTitle style={{ marginTop: "10px" }}>{title}</DialogTitle>
+          <DialogDescription style={{ marginTop: "15px" }}>
+            {description}
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => setIsOpen(false)}>

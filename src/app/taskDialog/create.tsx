@@ -62,7 +62,7 @@ export default function CreateTaskDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Criar Nova Tarefa</DialogTitle>
-          <DialogDescription>
+          <DialogDescription style={{ marginTop: "15px" }}>
             Preencha os campos abaixo para criar uma nova tarefa.
           </DialogDescription>
         </DialogHeader>

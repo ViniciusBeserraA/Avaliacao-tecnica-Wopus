@@ -16,22 +16,23 @@ import {
 type HeaderProps = {
   search: string;
   setSearch: (value: string) => void;
-  status: string;
-  setStatus: (value: string) => void;
+  loadTasks: (currentPage: any, status: any) => void;
   onLogout: () => void;
   createTask: (task: any) => Promise<void>;
+  currentPage: number;
 };
 
 export default function Header({
   search,
   setSearch,
-  status,
-  setStatus,
+  loadTasks,
   onLogout,
   createTask,
+  currentPage,
 }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [task, setTask] = useState({ title: "", description: "" });
+  const [status, setStatus] = useState("");
 
   const openCreateDialog = () => {
     setTask({ title: "", description: "" });
@@ -44,6 +45,7 @@ export default function Header({
     } else {
       setStatus(value);
     }
+    loadTasks(currentPage, value === "todos" ? "" : value);
   };
 
   return (
@@ -77,9 +79,9 @@ export default function Header({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos</SelectItem>
-            <SelectItem value="Pendente">Pendente</SelectItem>
-            <SelectItem value="Em progresso">Em progresso</SelectItem>
-            <SelectItem value="Concluída">Concluída</SelectItem>
+            <SelectItem value="PENDENTE">Pendente</SelectItem>
+            <SelectItem value="EM_PROGRESSO">Em progresso</SelectItem>
+            <SelectItem value="CONCLUIDA">Concluída</SelectItem>
           </SelectContent>
         </Select>
 

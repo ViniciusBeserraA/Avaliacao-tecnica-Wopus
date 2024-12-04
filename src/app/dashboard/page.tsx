@@ -27,7 +27,7 @@ export default function Dashboard() {
   };
   //Requisicoes
   // Requisição com paginação
-  const loadTasks = async (page: number = currentPage) => {
+  const loadTasks = async (page: number = currentPage, status: string = "") => {
     setLoading(true);
     setError("");
     const token = localStorage.getItem("token");
@@ -39,6 +39,7 @@ export default function Dashboard() {
         params: {
           page,
           limit: tasksPerPage,
+          status,
         },
       });
 
@@ -155,9 +156,9 @@ export default function Dashboard() {
         search={search}
         setSearch={setSearch}
         onLogout={handleLogout}
-        status={status}
-        setStatus={setStatus}
+        loadTasks={loadTasks}
         createTask={createTask}
+        currentPage={currentPage}
       />
 
       {loading ? (
@@ -166,7 +167,7 @@ export default function Dashboard() {
         <p className="text-red-500">{error}</p>
       ) : (
         <TableComponent
-          tasks={filteredTasks}
+          tasks={tasks}
           loadTasks={loadTasks}
           updatedTask={updateTask}
           deleteTask={deleteTask}
