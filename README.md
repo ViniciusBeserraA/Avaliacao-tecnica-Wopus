@@ -1,6 +1,6 @@
 # Projeto Wopus To-do (Avaliação Técnica)
 
-Este projeto é uma aplicação full-stack composta por um **frontend** desenvolvido com **Next.js**, um **backend** criado com **NestJS**, e um banco de dados **PostgreSQL**.
+Este é um projeto **full-stack** que consiste em um **gerenciador de tarefas** com um **frontend** desenvolvido utilizando **Next.js**, um **backend** construído com **NestJS** e um banco de dados **PostgreSQL**. A aplicação oferece funcionalidades robustas para o gerenciamento de tarefas e autenticação de usuários.
 
 ## Tecnologias Utilizadas
 
