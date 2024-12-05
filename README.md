@@ -1,6 +1,6 @@
 # Projeto Wopus To-do (Avaliação Técnica)
 
-Este projeto é uma aplicação full-stack composta por um **frontend** desenvolvido com **Next.js**, um **backend** criado com **NestJS**, e um banco de dados **PostgreSQL**.
+Este é um projeto **full-stack** que consiste em um **gerenciador de tarefas** com um **frontend** desenvolvido utilizando **Next.js**, um **backend** construído com **NestJS** e um banco de dados **PostgreSQL**. A aplicação oferece funcionalidades robustas para o gerenciamento de tarefas e autenticação de usuários.
 
 ## Tecnologias Utilizadas
 
@@ -51,8 +51,8 @@ Este projeto é uma aplicação full-stack composta por um **frontend** desenvol
 1. Clone o repositório do backend:
 
    ```bash
-   git clone <repositório-backend-url>
-   cd <pasta-backend>
+   git clone https://github.com/ViniciusBeserraA/Avaliacao-tecnica-Wopus.git
+   cd pasta-backend
    ```
 
 2. Instale as dependências:
@@ -100,8 +100,8 @@ O backend estará rodando em `http://localhost:3000`.
 1. Clone o repositório do frontend:
 
    ```bash
-   git clone <repositório-frontend-url>
-   cd <pasta-frontend>
+   git clone https://github.com/ViniciusBeserraA/Avaliacao-tecnica-Wopus.git
+   cd frontend
    ```
 
 2. Instale as dependências:
