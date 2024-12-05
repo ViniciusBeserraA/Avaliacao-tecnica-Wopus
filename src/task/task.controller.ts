@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { ApiResponse, TaskDto } from './task.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { GetUser } from 'src/auth/auth.get.user.decorator';
+import { AuthGuard } from '../auth/auth.guard';
+import { GetUser } from '../auth/auth.get.user.decorator';
 import { Task } from '@prisma/client';
 
 @UseGuards(AuthGuard)
