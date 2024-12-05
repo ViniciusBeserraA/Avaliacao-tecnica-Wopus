@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, LogOut } from "lucide-react";
-import TaskDialog from "../taskDialog/create";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Plus, LogOut } from 'lucide-react';
+import TaskDialog from '../taskDialog/create';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 type HeaderProps = {
   search: string;
@@ -46,7 +45,7 @@ export default function Header({
 
   return (
     <div className="mb-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mt-5 mb-4">
         <h1 className="text-3xl font-semibold text-gray-900">
           Gerenciador de Tarefas
         </h1>

@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-import { useState } from "react";
-import Image from "next/image";
-import axios from "../../lib/axios";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+'use client';
+import { useState } from 'react';
+import Image from 'next/image';
+import axios from '../../lib/axios';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function Login() {
-  const [tab, setTab] = useState("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [tab, setTab] = useState('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const router = useRouter();
 
@@ -17,21 +16,21 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post("/auth/login", { email, password });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("loginSuccess", "true");
-      router.push("/dashboard");
+      const { data } = await axios.post('/auth/login', { email, password });
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('loginSuccess', 'true');
+      router.push('/dashboard');
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Erro desconhecido";
+      const errorMessage = err.response?.data?.message || 'Erro desconhecido';
       toast(errorMessage, {
         style: {
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-          borderRadius: "8px",
-          padding: "12px",
+          backgroundColor: 'red',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '12px',
         },
-        position: "top-right",
+        position: 'top-right',
       });
     }
   };
@@ -40,33 +39,33 @@ export default function Login() {
     e.preventDefault();
 
     const toastStyle = {
-      backgroundColor: "red",
-      color: "white",
-      border: "none",
-      borderRadius: "8px",
-      padding: "12px",
+      backgroundColor: 'red',
+      color: 'white',
+      border: 'none',
+      borderRadius: '8px',
+      padding: '12px',
     };
 
     try {
-      const response = await axios.post("/users", { email, password });
+      const response = await axios.post('/users', { email, password });
       const { token, message } = response.data;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("loginSuccess", "true");
+      localStorage.setItem('token', token);
+      localStorage.setItem('loginSuccess', 'true');
 
-      toast(message || "Usuário criado com sucesso!", {
-        style: { ...toastStyle, backgroundColor: "green" },
-        position: "top-right",
+      toast(message || 'Usuário criado com sucesso!', {
+        style: { ...toastStyle, backgroundColor: 'green' },
+        position: 'top-right',
       });
 
-      router.push("/login");
+      router.push('/login');
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Erro ao criar usuário.";
+        error.response?.data?.message || 'Erro ao criar usuário.';
 
       toast(errorMessage, {
         style: toastStyle,
-        position: "top-right",
+        position: 'top-right',
       });
     }
   };
@@ -81,28 +80,28 @@ export default function Login() {
 
         <div className="flex justify-center mb-6">
           <button
-            onClick={() => setTab("login")}
+            onClick={() => setTab('login')}
             className={`px-4 py-2 rounded-t-lg ${
-              tab === "login"
-                ? "bg-primary text-white"
-                : "bg-gray-700 text-gray-300"
+              tab === 'login'
+                ? 'bg-primary text-white'
+                : 'bg-gray-700 text-gray-300'
             }`}
           >
             Login
           </button>
           <button
-            onClick={() => setTab("register")}
+            onClick={() => setTab('register')}
             className={`px-4 py-2 rounded-t-lg ${
-              tab === "register"
-                ? "bg-primary text-white"
-                : "bg-gray-700 text-gray-300"
+              tab === 'register'
+                ? 'bg-primary text-white'
+                : 'bg-gray-700 text-gray-300'
             }`}
           >
             Cadastro
           </button>
         </div>
 
-        {tab === "login" && (
+        {tab === 'login' && (
           <form onSubmit={handleSubmitLogin}>
             <div className="mb-4">
               <label htmlFor="email" className="text-white text-md block mb-2">
@@ -144,7 +143,7 @@ export default function Login() {
           </form>
         )}
 
-        {tab === "register" && (
+        {tab === 'register' && (
           <form onSubmit={handleSubmitCreateUser}>
             <div className="mb-4">
               <label htmlFor="email" className="text-white text-md block mb-2">

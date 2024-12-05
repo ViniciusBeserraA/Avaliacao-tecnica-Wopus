@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -7,18 +6,18 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectItem,
   SelectTrigger,
   SelectValue,
   SelectContent,
-} from "@/components/ui/select";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { toast } from 'sonner';
 
 type TaskDialogProps = {
   isOpen: boolean;
@@ -42,9 +41,9 @@ export default function TaskDialog({
 
   const handleSave = () => {
     if (!task?.title || !task?.description || !task?.status) {
-      toast("Título, descrição e status são obrigatórios.", {
-        style: { backgroundColor: "red", color: "white" },
-        position: "top-right",
+      toast('Título, descrição e status são obrigatórios.', {
+        style: { backgroundColor: 'red', color: 'white' },
+        position: 'top-right',
       });
       return;
     }
@@ -56,7 +55,7 @@ export default function TaskDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar Tarefa</DialogTitle>
-          <DialogDescription style={{ marginTop: "15px" }}>
+          <DialogDescription style={{ marginTop: '15px' }}>
             Altere os campos abaixo para editar a tarefa.
           </DialogDescription>
         </DialogHeader>
@@ -64,19 +63,19 @@ export default function TaskDialog({
         <div className="space-y-4">
           <Input
             type="text"
-            value={task?.title || ""}
+            value={task?.title || ''}
             onChange={(e) => setTask({ ...task, title: e.target.value })}
             placeholder="Título da tarefa"
             className="w-full"
           />
           <Textarea
-            value={task?.description || ""}
+            value={task?.description || ''}
             onChange={(e) => setTask({ ...task, description: e.target.value })}
             placeholder="Descrição da tarefa"
             className="w-full"
           />
           <Select
-            value={task?.status || ""}
+            value={task?.status || ''}
             onValueChange={(value) => setTask({ ...task, status: value })}
           >
             <SelectTrigger className="w-full">

@@ -1,19 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 import {
   Table,
   TableHeader,
   TableBody,
   TableRow,
   TableCell,
-} from "@/components/ui/table";
-import { Check, Edit, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
-import TaskDialog from "../taskDialog/edit";
-import ConfirmDialog from "@/components/confirmDialog";
-import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/components/ui/table';
+import { Check, Edit, Trash } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import TaskDialog from '../taskDialog/edit';
+import ConfirmDialog from '@/components/confirmDialog';
+import { format } from 'date-fns';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Pagination,
   PaginationContent,
@@ -22,9 +20,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { toast } from "sonner";
-import taskService from "@/services/taskService";
+} from '@/components/ui/pagination';
+import { toast } from 'sonner';
+import taskService from '@/services/taskService';
 
 type Task = {
   id: number;
@@ -32,7 +30,7 @@ type Task = {
   description: string;
   status: string;
   creationDate: string;
-  completionDate: "";
+  completionDate: '';
   userId: string;
 };
 
@@ -87,7 +85,7 @@ export default function TaskTable({
           >
             {i}
           </PaginationLink>
-        </PaginationItem>
+        </PaginationItem>,
       );
     }
     return pageNumbers;
@@ -105,14 +103,14 @@ export default function TaskTable({
         id: selectedTask.id,
         title: selectedTask.title,
         description: selectedTask.description,
-        status: "CONCLUIDA",
+        status: 'CONCLUIDA',
         userId: selectedTask.userId,
       };
 
       await updateTask(updatedData);
-      toast("Tarefa finalizada com sucesso", {
-        style: { backgroundColor: "green", color: "white" },
-        position: "top-right",
+      toast('Tarefa finalizada com sucesso', {
+        style: { backgroundColor: 'green', color: 'white' },
+        position: 'top-right',
       });
 
       await loadTasks(currentPage);
@@ -120,26 +118,26 @@ export default function TaskTable({
       setIsDoneOpen(false);
       setSelectedTask(null);
     } catch (error) {
-      console.error("Erro ao finalizar tarefa:", error);
+      console.error('Erro ao finalizar tarefa:', error);
     }
   };
 
   const handleUpdateTask = async (updatedTask: any) => {
     try {
       await updateTask(updatedTask);
-      toast("Tarefa atualizada com sucesso", {
-        style: { backgroundColor: "green", color: "white" },
-        position: "top-right",
+      toast('Tarefa atualizada com sucesso', {
+        style: { backgroundColor: 'green', color: 'white' },
+        position: 'top-right',
       });
 
       await loadTasks(currentPage);
 
       setIsEditOpen(false);
     } catch (error) {
-      console.error("Erro ao atualizar tarefa:", error);
-      toast("Erro ao atualizar tarefa.", {
-        style: { backgroundColor: "red", color: "white" },
-        position: "top-right",
+      console.error('Erro ao atualizar tarefa:', error);
+      toast('Erro ao atualizar tarefa.', {
+        style: { backgroundColor: 'red', color: 'white' },
+        position: 'top-right',
       });
     }
   };
@@ -148,9 +146,9 @@ export default function TaskTable({
     if (selectedTask) {
       try {
         await deleteTask(selectedTask.id.toString());
-        toast("Tarefa excluída com sucesso", {
-          style: { backgroundColor: "green", color: "white" },
-          position: "top-right",
+        toast('Tarefa excluída com sucesso', {
+          style: { backgroundColor: 'green', color: 'white' },
+          position: 'top-right',
         });
 
         await loadTasks(currentPage);
@@ -158,7 +156,7 @@ export default function TaskTable({
         setIsDeleteOpen(false);
         setSelectedTask(null);
       } catch (error) {
-        console.error("Erro ao excluir tarefa:", error);
+        console.error('Erro ao excluir tarefa:', error);
       }
     }
   };
@@ -221,7 +219,7 @@ export default function TaskTable({
               <TableRow
                 key={task.id}
                 className={`${
-                  index % 2 === 0 ? "" : "bg-white"
+                  index % 2 === 0 ? '' : 'bg-white'
                 } transition duration-200`}
               >
                 <TableCell className="py-2 px-4 text-gray-800">
@@ -231,24 +229,24 @@ export default function TaskTable({
                   {task.description}
                 </TableCell>
                 <TableCell className="py-3 px-4 text-gray-800">
-                  {format(new Date(task.creationDate), "dd/MM/yyyy HH:mm:ss")}
+                  {format(new Date(task.creationDate), 'dd/MM/yyyy HH:mm:ss')}
                 </TableCell>
                 <TableCell className="py-3 px-4 text-gray-800">
                   {task.completionDate
                     ? format(
                         new Date(task.completionDate),
-                        "dd/MM/yyyy HH:mm:ss"
+                        'dd/MM/yyyy HH:mm:ss',
                       )
-                    : "-"}
+                    : '-'}
                 </TableCell>
                 <TableCell className="py-3 px-4 text-gray-800">
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                      task.status === "PENDENTE"
-                        ? "bg-orange-100 text-orange-800"
-                        : task.status === "EM_PROGRESSO"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
+                      task.status === 'PENDENTE'
+                        ? 'bg-orange-100 text-orange-800'
+                        : task.status === 'EM_PROGRESSO'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-green-100 text-green-800'
                     }`}
                   >
                     {task.status}
@@ -279,7 +277,7 @@ export default function TaskTable({
                         Excluir tarefa
                       </span>
                     </div>
-                    {task.status !== "CONCLUIDA" && (
+                    {task.status !== 'CONCLUIDA' && (
                       <div className="relative group">
                         <button
                           onClick={() => {
@@ -309,7 +307,7 @@ export default function TaskTable({
         </TableBody>
       </Table>
 
-      <Pagination style={{ marginTop: "10px" }}>
+      <Pagination style={{ marginTop: '10px' }}>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

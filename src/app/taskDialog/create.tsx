@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Dialog,
   DialogContent,
@@ -6,13 +5,13 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import taskService from "../../services/taskService";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import taskService from '../../services/taskService';
+import { toast } from 'sonner';
 
 type CreateTaskDialogProps = {
   isOpen: boolean;
@@ -25,16 +24,16 @@ export default function CreateTaskDialog({
   setIsOpen,
   loadTasks,
 }: CreateTaskDialogProps) {
-  const [task, setTask] = useState({ title: "", description: "" });
+  const [task, setTask] = useState({ title: '', description: '' });
   const [loading, setLoading] = useState<boolean>(false);
 
   const { createTask } = taskService();
 
   const handleCreateTask = async () => {
     if (!task.title || !task.description) {
-      toast("Título e descrição são obrigatórios.", {
-        style: { backgroundColor: "red", color: "white" },
-        position: "top-right",
+      toast('Título e descrição são obrigatórios.', {
+        style: { backgroundColor: 'red', color: 'white' },
+        position: 'top-right',
       });
       return;
     }
@@ -43,17 +42,17 @@ export default function CreateTaskDialog({
       setLoading(true);
       await createTask(task);
 
-      toast("Tarefa criada com sucesso!", {
-        style: { backgroundColor: "green", color: "white" },
-        position: "top-right",
+      toast('Tarefa criada com sucesso!', {
+        style: { backgroundColor: 'green', color: 'white' },
+        position: 'top-right',
       });
 
-      loadTasks(1, "", "");
+      loadTasks(1, '', '');
     } catch (error: any) {
-      console.error("Erro ao criar tarefa:", error);
-      toast(error.response?.data?.message || "Erro ao criar tarefa.", {
-        style: { backgroundColor: "red", color: "white" },
-        position: "top-right",
+      console.error('Erro ao criar tarefa:', error);
+      toast(error.response?.data?.message || 'Erro ao criar tarefa.', {
+        style: { backgroundColor: 'red', color: 'white' },
+        position: 'top-right',
       });
     } finally {
       setIsOpen(false);
@@ -66,7 +65,7 @@ export default function CreateTaskDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Criar Nova Tarefa</DialogTitle>
-          <DialogDescription style={{ marginTop: "15px" }}>
+          <DialogDescription style={{ marginTop: '15px' }}>
             Preencha os campos abaixo para criar uma nova tarefa.
           </DialogDescription>
         </DialogHeader>
@@ -92,7 +91,7 @@ export default function CreateTaskDialog({
             Cancelar
           </Button>
           <Button onClick={handleCreateTask} disabled={loading}>
-            {loading ? "Salvando..." : "Criar Tarefa"}
+            {loading ? 'Salvando...' : 'Criar Tarefa'}
           </Button>
         </DialogFooter>
       </DialogContent>

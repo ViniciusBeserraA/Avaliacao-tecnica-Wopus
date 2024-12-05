@@ -5,8 +5,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 type ConfirmDialogProps = {
   isOpen: boolean;
@@ -32,8 +32,8 @@ export default function ConfirmDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle style={{ marginTop: "10px" }}>{title}</DialogTitle>
-          <DialogDescription style={{ marginTop: "15px" }}>
+          <DialogTitle style={{ marginTop: '10px' }}>{title}</DialogTitle>
+          <DialogDescription style={{ marginTop: '15px' }}>
             {description}
           </DialogDescription>
         </DialogHeader>
