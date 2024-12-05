@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Projeto Wopus To-do (Avaliação Técnica)
 
-## Getting Started
+Este projeto é uma aplicação full-stack composta por um **frontend** desenvolvido com **Next.js**, um **backend** criado com **NestJS**, e um banco de dados **PostgreSQL**.
 
-First, run the development server:
+## Tecnologias Utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Frontend**:
+  - [Next.js](https://nextjs.org/): Framework React para construção de interfaces do usuário.
+  - [React](https://reactjs.org/): Biblioteca JavaScript para construção de interfaces de usuário.
+  - [Tailwind CSS](https://tailwindcss.com/): Framework CSS utilitário para estilização rápida e responsiva.
+  - [ShadCN](https://github.com/shadcn/ui): Biblioteca de componentes de UI para criação rápida e moderna de interfaces.
+  - [TypeScript](https://www.typescriptlang.org/): Superset do JavaScript para tipagem estática.
+- **Backend**:
+  - [NestJS](https://nestjs.com/): Framework para construção de aplicações escaláveis e eficientes com Node.js.
+  - [Prisma](https://www.prisma.io/): ORM (Object-Relational Mapper) moderno e eficiente para integração com o PostgreSQL.
+  - [class-validator](https://github.com/typestack/class-validator): Biblioteca para validar objetos, especialmente útil para validação de DTOs no NestJS.
+  - [bcrypt](https://github.com/kelektiv/bcrypt.js): Biblioteca para criptografar e comparar senhas de usuários.
+  - [jsonwebtoken (JWT)](https://github.com/auth0/node-jsonwebtoken): Biblioteca para gerar e validar tokens JWT para autenticação e proteção de rotas.
+  - [Axios](https://axios-http.com/ptbr/docs/intro): Cliente HTTP baseado em Promises, usado para fazer requisições HTTP assíncronas para o backend.
+- **Banco de Dados**:
+  - [PostgreSQL](https://www.postgresql.org/): Banco de dados relacional robusto e de código aberto.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Estrutura do Projeto
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Frontend (Next.js)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- O frontend é construído utilizando o Next.js, que fornece funcionalidades como renderização do lado do servidor (SSR), roteamento dinâmico e otimização automática de imagens.
+- A interface de usuário é construída com React e estilizada com Tailwind CSS.
+- Componentes da interface são criados utilizando a biblioteca **ShadCN** para garantir uma experiência de usuário moderna e responsiva.
+- TypeScript é utilizado para fornecer tipagem estática e melhorar a manutenção do código.
 
-## Learn More
+### Backend (NestJS)
 
-To learn more about Next.js, take a look at the following resources:
+- O backend é desenvolvido usando o NestJS, um framework inspirado no Angular que facilita a criação de APIs escaláveis e organizadas.
+- O NestJS é integrado com o PostgreSQL utilizando o Prisma, que é um ORM moderno e eficiente para interagir com o banco de dados.
+- **class-validator** é utilizado para validar os DTOs, garantindo que os dados enviados nas requisições sejam corretos e no formato esperado.
+- **bcrypt** é utilizado para criptografar as senhas dos usuários antes de armazená-las no banco de dados, além de ser utilizado para realizar comparações ao autenticar os usuários.
+- **jsonwebtoken (JWT)** é utilizado para gerar tokens de autenticação para os usuários e proteger rotas sensíveis da API.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Banco de Dados (PostgreSQL)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- O banco de dados PostgreSQL é utilizado para armazenar os dados da aplicação de forma segura e escalável.
+- O Prisma gerencia as interações com o banco de dados de maneira eficiente.
 
-## Deploy on Vercel
+## Como Rodar o Projeto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 1. Configuração do Backend (NestJS)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### Passos:
+
+1. Clone o repositório do backend:
+
+   ```bash
+   git clone <repositório-backend-url>
+   cd <pasta-backend>
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+3. Crie seu arquivo `.env` e adicione as seguintes credenciais:
+
+- JWT_SECRET: Chave secreta para o JWT (use uma chave forte e segura)
+
+- JWT_EXPIRATION_TIME: Tempo de expiração do JWT (exemplo: 1h para uma hora)
+
+- DATABASE_URL: URL de conexão com o banco de dados PostgreSQL
+
+- O Arquivo deve ficar na seguinte forma
+
+  ```env
+  JWT_SECRET=chavesecreta
+  JWT_EXPIRATION_TIME=3600
+  DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome-do-banco?schema=public"
+  ```
+
+4. Execute as migrations com o Prisma:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+   - Após isso será criado um usuário e tarefa associada a esse usuário. Também é possivel acessar
+     a aplicação, cadastrando um novo usuário, caso seja preferível.
+
+5. Inicie o servidor:
+   ```bash
+   npm run start:dev
+   ```
+
+O backend estará rodando em `http://localhost:3000`.
+
+### 2. Configuração do Frontend (Next.js)
+
+#### Passos:
+
+1. Clone o repositório do frontend:
+
+   ```bash
+   git clone <repositório-frontend-url>
+   cd <pasta-frontend>
+   ```
+
+2. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+3. Crie seu arquivo `.env` e adicione as seguintes credenciais:
+
+- NEXT_PUBLIC_API_URL: url customizado para que o axios execute as requisicoes
+
+- O Arquivo deve ficar na seguinte forma
+
+  ```env
+  NEXT_PUBLIC_API_URL=http://localhost:3000
+  ```
+
+4. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+O frontend estará rodando em `http://localhost:3001`.
+
+### 3. Configuração do Banco de Dados (PostgreSQL)
+
+Caso você ainda não tenha o PostgreSQL configurado:
+
+1. Instale o PostgreSQL em sua máquina ou use um serviço em nuvem (como o [ElephantSQL](https://www.elephantsql.com/)).
+2. Crie um banco de dados e configure as credenciais no arquivo `.env` do backend.
+3. As migrations serão aplicadas automaticamente ao rodar o backend.
