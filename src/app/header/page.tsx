@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,8 @@ type HeaderProps = {
   loadTasks: (currentPage: any, search: any, status: any) => void;
   onLogout: () => void;
   currentPage: number;
+  status: string;
+  onStatusChange: (value: string) => void;
 };
 
 export default function Header({
@@ -26,29 +27,21 @@ export default function Header({
   setSearch,
   loadTasks,
   onLogout,
-  currentPage,
+  status,
+  onStatusChange,
 }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [task, setTask] = useState({ title: "", description: "" });
-  const [status, setStatus] = useState("");
 
   const openCreateDialog = () => {
-    setTask({ title: "", description: "" });
     setIsOpen(true);
   };
 
-  const handleSearch = (search: string) => {
-    setSearch(search);
-    loadTasks(currentPage, search, status);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
   };
 
-  const handleStatusChange = (value: string) => {
-    if (value === "todos") {
-      setStatus("");
-    } else {
-      setStatus(value);
-    }
-    loadTasks(currentPage, search, value === "todos" ? "" : value);
+  const handleStatusSelect = (value: string) => {
+    onStatusChange(value);
   };
 
   return (
@@ -68,15 +61,17 @@ export default function Header({
       </div>
 
       <div className="flex items-center space-x-4">
+        {/* Campo de busca */}
         <Input
           type="text"
           value={search}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={handleSearchChange} // Aplica o filtro de pesquisa
           placeholder="Pesquisar tarefa..."
           className="w-full max-w-md border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <Select value={status} onValueChange={handleStatusChange}>
+        {/* Seletor de status */}
+        <Select value={status} onValueChange={handleStatusSelect}>
           <SelectTrigger className="w-1/6 bg-primary text-white max-w-md border border-gray-300 rounded-lg shadow-sm focus:outline-none">
             <SelectValue placeholder="Selecione o status" />
           </SelectTrigger>
@@ -88,6 +83,7 @@ export default function Header({
           </SelectContent>
         </Select>
 
+        {/* Botão para criar tarefa */}
         <Button
           variant="outline"
           onClick={openCreateDialog}
@@ -98,6 +94,7 @@ export default function Header({
         </Button>
       </div>
 
+      {/* Dialog para criação de tarefa */}
       <TaskDialog isOpen={isOpen} setIsOpen={setIsOpen} loadTasks={loadTasks} />
     </div>
   );

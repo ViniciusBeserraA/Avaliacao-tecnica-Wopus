@@ -43,45 +43,29 @@ type TableComponentProps = {
   totalTasks: number;
   currentPage: number;
   tasksPerPage: number;
+  loadTasks: (currentPage: number) => void;
   changePage: (page: number) => void;
 };
 
-export default function TaskTable({ error }: TableComponentProps) {
+export default function TaskTable({
+  tasks,
+  error,
+  changePage,
+  loadTasks,
+  totalTasks,
+  currentPage,
+  tasksPerPage,
+}: TableComponentProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [tasksPerPage, setTasksPerPage] = useState<number>(10);
-  const [totalTasks, setTotalTasks] = useState<number>(0);
+  const { updateTask, deleteTask } = taskService();
 
-  const { loadTasks, updateTask, deleteTask } = taskService();
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      setLoading(true);
-      try {
-        const response = await loadTasks(currentPage);
-        setTasks(response.tasks);
-        setTotalTasks(response.total);
-      } catch (err) {
-        console.log("Erro ao carregar as tarefas", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, [currentPage]);
-
-  const changePage = (page: number) => {
-    setCurrentPage(page);
-    loadTasks(page);
-  };
+  useEffect(() => {}, [currentPage]);
 
   const totalPages = Math.ceil(totalTasks / tasksPerPage);
 
@@ -131,9 +115,7 @@ export default function TaskTable({ error }: TableComponentProps) {
         position: "top-right",
       });
 
-      const response = await loadTasks(currentPage);
-      setTasks(response.tasks);
-      setTotalTasks(response.total);
+      await loadTasks(currentPage);
 
       setIsDoneOpen(false);
       setSelectedTask(null);
@@ -150,9 +132,7 @@ export default function TaskTable({ error }: TableComponentProps) {
         position: "top-right",
       });
 
-      const response = await loadTasks(currentPage);
-      setTasks(response.tasks);
-      setTotalTasks(response.total);
+      await loadTasks(currentPage);
 
       setIsEditOpen(false);
     } catch (error) {
@@ -173,9 +153,7 @@ export default function TaskTable({ error }: TableComponentProps) {
           position: "top-right",
         });
 
-        const response = await loadTasks(currentPage);
-        setTasks(response.tasks);
-        setTotalTasks(response.total);
+        await loadTasks(currentPage);
 
         setIsDeleteOpen(false);
         setSelectedTask(null);
@@ -238,7 +216,7 @@ export default function TaskTable({ error }: TableComponentProps) {
                 {error}
               </TableCell>
             </TableRow>
-          ) : (
+          ) : tasks && tasks.length > 0 ? (
             tasks.map((task, index) => (
               <TableRow
                 key={task.id}
@@ -321,6 +299,12 @@ export default function TaskTable({ error }: TableComponentProps) {
                 </TableCell>
               </TableRow>
             ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center text-gray-500">
+                Nenhuma tarefa encontrada.
+              </TableCell>
+            </TableRow>
           )}
         </TableBody>
       </Table>
