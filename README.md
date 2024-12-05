@@ -51,8 +51,8 @@ Este é um projeto **full-stack** que consiste em um **gerenciador de tarefas** 
 1. Clone o repositório do backend:
 
    ```bash
-   git clone <repositório-backend-url>
-   cd <pasta-backend>
+   git clone https://github.com/ViniciusBeserraA/Avaliacao-tecnica-Wopus.git
+   cd pasta-backend
    ```
 
 2. Instale as dependências:
@@ -100,8 +100,8 @@ O backend estará rodando em `http://localhost:3000`.
 1. Clone o repositório do frontend:
 
    ```bash
-   git clone <repositório-frontend-url>
-   cd <pasta-frontend>
+   git clone https://github.com/ViniciusBeserraA/Avaliacao-tecnica-Wopus.git
+   cd frontend
    ```
 
 2. Instale as dependências:
@@ -134,3 +134,9 @@ Caso você ainda não tenha o PostgreSQL configurado:
 1. Instale o PostgreSQL em sua máquina ou use um serviço em nuvem (como o [ElephantSQL](https://www.elephantsql.com/)).
 2. Crie um banco de dados e configure as credenciais no arquivo `.env` do backend.
 3. As migrations serão aplicadas automaticamente ao rodar o backend.
+4. Credenciais iniciais ao rodar o seed do prisma:
+
+   ```bash
+   email: admWopus@gmail.com
+   password: wopus2024
+   ```
