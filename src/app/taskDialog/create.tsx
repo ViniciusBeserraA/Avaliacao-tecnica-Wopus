@@ -90,7 +90,11 @@ export default function CreateTaskDialog({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleCreateTask} disabled={loading}>
+          <Button
+            id="criar-tarefa-btn"
+            onClick={handleCreateTask}
+            disabled={loading}
+          >
             {loading ? 'Salvando...' : 'Criar Tarefa'}
           </Button>
         </DialogFooter>
