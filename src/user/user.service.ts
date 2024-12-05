@@ -13,25 +13,25 @@ export class UserService {
   ) {}
 
   async create(newUser: UserDto): Promise<ApiResponse<any>> {
-    const existingUser = this.findByEmail(newUser.email);
+    const existingUser = await this.findByEmail(newUser.email);
     if (existingUser) {
       throw new ConflictException(
         `Usuário com o email ${newUser.email} já está registrado.`,
       );
+    } else {
+      newUser.id = uuid();
+      newUser.password = bcryptHashSync(newUser.password, 10);
+      const createdUser = await this.userRepository.create(newUser);
+
+      return {
+        status: 'success',
+        message: 'Usuário cadastrado com sucesso!',
+        data: {
+          id: createdUser.id,
+          email: createdUser.email,
+        },
+      };
     }
-
-    newUser.id = uuid();
-    newUser.password = bcryptHashSync(newUser.password, 10);
-    const createdUser = await this.userRepository.create(newUser);
-
-    return {
-      status: 'success',
-      message: 'Usuário cadastrado com sucesso!',
-      data: {
-        id: createdUser.id,
-        email: createdUser.email,
-      },
-    };
   }
 
   async findAll(): Promise<UserDto[]> {
