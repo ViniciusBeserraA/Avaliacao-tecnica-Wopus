@@ -160,5 +160,5 @@ npm run test
 Rodar os testes com Cypress, use o comando:
 
 ```bash
-npx cypress run
+npx cypress open
 ```
