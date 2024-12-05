@@ -17,6 +17,8 @@ Este é um projeto **full-stack** que consiste em um **gerenciador de tarefas** 
   - [bcrypt](https://github.com/kelektiv/bcrypt.js): Biblioteca para criptografar e comparar senhas de usuários.
   - [jsonwebtoken (JWT)](https://github.com/auth0/node-jsonwebtoken): Biblioteca para gerar e validar tokens JWT para autenticação e proteção de rotas.
   - [Axios](https://axios-http.com/ptbr/docs/intro): Cliente HTTP baseado em Promises, usado para fazer requisições HTTP assíncronas para o backend.
+  - [Jest](https://jestjs.io/pt-BR/): Framework de testes em JavaScript, utilizado para testes unitários e de integração.
+- [Cypress](https://www.cypress.io/): Ferramenta para testes E2E (end-to-end), usada para testar a aplicação de forma realista em um ambiente de navegador.
 - **Banco de Dados**:
   - [PostgreSQL](https://www.postgresql.org/): Banco de dados relacional robusto e de código aberto.
 
@@ -52,7 +54,7 @@ Este é um projeto **full-stack** que consiste em um **gerenciador de tarefas** 
 
    ```bash
    git clone https://github.com/ViniciusBeserraA/Avaliacao-tecnica-Wopus.git
-   cd pasta-backend
+   cd backend
    ```
 
 2. Instale as dependências:
@@ -140,3 +142,23 @@ Caso você ainda não tenha o PostgreSQL configurado:
    email: admWopus@gmail.com
    password: wopus2024
    ```
+
+### 4. Execução de testes
+
+## 1. Testes com Jest
+
+### Executando os testes unitários e de integração com Jest:
+
+Rodar os testes com Jest, use o comando:
+
+```bash
+npm run test
+```
+
+## 2. Executando os testes de integração e E2E com Cypress:
+
+Rodar os testes com Cypress, use o comando:
+
+```bash
+npx cypress run
+```
